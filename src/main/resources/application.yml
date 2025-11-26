@@ -1,0 +1,80 @@
+spring:
+  config:
+    import: optional:file:../.env[.properties],file:.env[.properties]
+  application:
+    name: media-service
+  reactor:
+    netty:
+      shutdown-quiet-period: 0
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+    properties:
+      schema:
+        registry:
+          url: ${KAFKA_SCHEMA_REGISTRY_URL}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+
+    consumer:
+      group-id: ${spring.application.name}
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+      properties:
+        specific.avro.reader: true
+
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
+      timeout: 100000
+      database: 0
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+
+  #  cloud:
+  #    consul:
+  #      host: ${CONSUL_HOST}
+  #      port: ${CONSUL_PORT}
+  #
+  #      discovery:
+  #        enabled: true
+  #        register: true
+  #        instance-id: ${spring.application.name}:${server.port}
+  #        service-name: ${spring.application.name}
+  #        port: ${server.port}
+  #        health-check-path: /actuator/health
+  #        health-check-interval: 15s
+  #        health-check-timeout: 10s
+  #        health-check-critical-timeout: 30m
+  #        prefer-ip-address: true
+  #        ip-address: ${CONSUL_IP:localhost}
+  #
+  #
+  #        heartbeat:
+  #          enabled: true
+  #          ttl: 10s
+  security:
+    oauth2:
+      resource server:
+        jwt:
+          issuer-uri: ${KEYCLOAK_URI}/realms/${KEYCLOAK_REALM:your-realm}
+          jwk-set-uri: ${KEYCLOAK_URI}/realms/${KEYCLOAK_REALM:your-realm}/protocol/openid-connect/certs
+
+
+
+
+server:
+  port: ${SPRING_PORT}
+
+
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+

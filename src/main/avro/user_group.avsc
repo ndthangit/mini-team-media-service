@@ -1,0 +1,23 @@
+{
+  "type": "record",
+  "name": "UserGroup",
+  "namespace": "com.example.mediaservice.entity.relationship",
+  "fields": [
+    {
+      "name": "userId",
+      "type": "long"
+    },
+    {
+      "name": "groupId",
+      "type": "long"
+    },
+    {
+      "name": "relationshipType",
+      "type": {
+        "type": "enum",
+        "name": "RelationshipType",
+        "symbols": ["CREATE", "JOIN"]
+      }
+    }
+  ]
+}

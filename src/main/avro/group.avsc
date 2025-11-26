@@ -1,0 +1,37 @@
+{
+  "type": "record",
+  "name": "Group",
+  "namespace": "com.example.mediaservice.entity",
+  "fields": [
+    {
+      "name": "id",
+      "type": "long",
+      "doc": "Group ID as primary key"
+    },
+    {
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "name": "code",
+      "type": "string",
+      "doc": "Unique code for joining the group"
+    },
+    {
+      "name": "hidden",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "name": "createdBy",
+      "type": "long",
+      "doc": "User ID who created the group"
+    },
+    {
+      "name": "createdAt",
+      "type": ["null", "long"],
+      "default": null,
+      "doc": "Creation timestamp"
+    }
+  ]
+}

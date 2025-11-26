@@ -1,0 +1,46 @@
+{
+  "type": "record",
+  "name": "User",
+  "namespace": "com.example.mediaservice.entity",
+  "fields": [
+    {
+      "name": "email",
+      "type": "string",
+      "doc": "Email as primary key"
+    },
+    {
+      "name": "dateOfBirth",
+      "type": "string"
+    },
+    {
+      "name": "gender",
+      "type": "string"
+    },
+    {
+      "name": "firstName",
+      "type": "string"
+    },
+    {
+      "name": "lastName",
+      "type": "string"
+    },
+    {
+      "name": "version",
+      "type": ["null", "int"],
+      "default": null,
+      "doc": "Version for optimistic locking"
+    },
+    {
+      "name": "createdAt",
+      "type": ["null", "long"],
+      "default": null,
+      "doc": "Creation timestamp"
+    },
+    {
+      "name": "lastModified",
+      "type": ["null", "long"],
+      "default": null,
+      "doc": "Last modified timestamp"
+    }
+  ]
+}
