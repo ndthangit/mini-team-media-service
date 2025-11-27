@@ -87,7 +87,8 @@ public class GroupRedisService {
      * @param userEmail The user's email.
      * @return A list of Group objects.
      */
-    public List<Group> getGroupsByUser(String userEmail) {
+    // Sửa return type từ List<Group> thành List<GroupDto>
+    public List<GroupDto> getGroupsByUser(String userEmail) {
         String key = getUserGroupsKey(userEmail);
         try {
             HashOperations<String, String, String> hashOps = redisTemplate.opsForHash();
@@ -96,10 +97,11 @@ public class GroupRedisService {
             return groupJsonList.stream()
                     .map(json -> {
                         try {
-                            return objectMapper.readValue(json, Group.class);
+                            // QUAN TRỌNG: Deserialize thẳng ra GroupDto, không dùng Group (Avro) nữa
+                            return objectMapper.readValue(json, GroupDto.class);
                         } catch (IOException e) {
                             log.error("Error deserializing group JSON for user '{}': {}", userEmail, e.getMessage());
-                            return null; // Skip corrupted data
+                            return null;
                         }
                     })
                     .filter(Objects::nonNull)

@@ -1,5 +1,6 @@
 package com.example.mediaservice.controller;
 
+import com.example.mediaservice.dto.GroupDto;
 import com.example.mediaservice.entity.Group;
 import com.example.mediaservice.entity.relationship.UserChannel;
 import com.example.mediaservice.entity.relationship.UserGroup;
@@ -84,33 +85,33 @@ public class GroupController {
         }
     }
 
-    @GetMapping("/{groupId}")
-    public ResponseEntity<?> getGroup(@PathVariable String groupId) {
-        try {
-            String userEmail = tokenService.getEmailFromToken();
-
-            if (userEmail == null || userEmail.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body("Unable to extract email from token");
-            }
-
-
-            List<Group> groups = groupRedisService.getGroupsByUser(userEmail);
-            Optional<Group> group = groups.stream()
-                    .filter(g -> g.getId().toString().equals(groupId))
-                    .findFirst();
-
-            if (group.isPresent()) {
-                return ResponseEntity.ok(group.get());
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body("Group not found for this user in cache");
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to retrieve group from cache: " + e.getMessage());
-        }
-    }
+//    @GetMapping("/{groupId}")
+//    public ResponseEntity<?> getGroup(@PathVariable String groupId) {
+//        try {
+//            String userEmail = tokenService.getEmailFromToken();
+//
+//            if (userEmail == null || userEmail.isEmpty()) {
+//                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+//                        .body("Unable to extract email from token");
+//            }
+//
+//
+//            List<GroupDto> groups = groupRedisService.getGroupsByUser(userEmail);
+//            Optional<Group> group = groups.stream()
+//                    .filter(g -> g.getId().toString().equals(groupId))
+//                    .findFirst();
+//
+//            if (group.isPresent()) {
+//                return ResponseEntity.ok(group.get());
+//            } else {
+//                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+//                        .body("Group not found for this user in cache");
+//            }
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                    .body("Failed to retrieve group from cache: " + e.getMessage());
+//        }
+//    }
 
     @GetMapping("/my-groups")
     public ResponseEntity<?> getMyGroups() {
@@ -123,7 +124,7 @@ public class GroupController {
             }
 
 
-            List<Group> groups = groupRedisService.getGroupsByUser(userEmail);
+            List<GroupDto> groups = groupRedisService.getGroupsByUser(userEmail);
             return ResponseEntity.ok(groups);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
