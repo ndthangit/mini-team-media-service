@@ -16,7 +16,7 @@ public class UserGroupProducerService {
     public void sendUserGroupEvent(UserGroup userGroup) {
         try {
             String key = userGroup.getUserId() + ":" + userGroup.getGroupId();
-            String topic = userGroup.getRelationshipType().toString().equals("CREATE")
+            String topic = userGroup.getUserGroupRelationship().toString().equals("CREATE")
                     ? "user-group-create"
                     : "user-group-join";
 

@@ -5,18 +5,18 @@
  */
 package com.example.mediaservice.entity;
 
-import org.apache.avro.message.BinaryMessageDecoder;
-import org.apache.avro.message.BinaryMessageEncoder;
-import org.apache.avro.message.SchemaStore;
 import org.apache.avro.specific.SpecificData;
 import org.apache.avro.util.Utf8;
+import org.apache.avro.message.BinaryMessageEncoder;
+import org.apache.avro.message.BinaryMessageDecoder;
+import org.apache.avro.message.SchemaStore;
 
 @org.apache.avro.specific.AvroGenerated
 public class Group extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = -3556158056636443879L;
+  private static final long serialVersionUID = -235230582978598362L;
 
 
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Group\",\"namespace\":\"com.example.mediaservice.entity\",\"fields\":[{\"name\":\"id\",\"type\":\"long\",\"doc\":\"Group ID as primary key\"},{\"name\":\"name\",\"type\":\"string\"},{\"name\":\"code\",\"type\":\"string\",\"doc\":\"Unique code for joining the group\"},{\"name\":\"hidden\",\"type\":\"boolean\",\"default\":false},{\"name\":\"createdBy\",\"type\":\"long\",\"doc\":\"User ID who created the group\"},{\"name\":\"createdAt\",\"type\":[\"null\",\"long\"],\"doc\":\"Creation timestamp\",\"default\":null}]}");
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Group\",\"namespace\":\"com.example.mediaservice.entity\",\"fields\":[{\"name\":\"id\",\"type\":\"string\"},{\"name\":\"name\",\"type\":\"string\"},{\"name\":\"hidden\",\"type\":\"boolean\",\"default\":false},{\"name\":\"owner\",\"type\":\"string\",\"doc\":\"email of the user who created the group\"}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static final SpecificData MODEL$ = new SpecificData();
@@ -72,16 +72,11 @@ public class Group extends org.apache.avro.specific.SpecificRecordBase implement
     return DECODER.decode(b);
   }
 
-  /** Group ID as primary key */
-  private long id;
-  private CharSequence name;
-  /** Unique code for joining the group */
-  private CharSequence code;
+  private java.lang.CharSequence id;
+  private java.lang.CharSequence name;
   private boolean hidden;
-  /** User ID who created the group */
-  private long createdBy;
-  /** Creation timestamp */
-  private Long createdAt;
+  /** email of the user who created the group */
+  private java.lang.CharSequence owner;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -92,20 +87,16 @@ public class Group extends org.apache.avro.specific.SpecificRecordBase implement
 
   /**
    * All-args constructor.
-   * @param id Group ID as primary key
+   * @param id The new value for id
    * @param name The new value for name
-   * @param code Unique code for joining the group
    * @param hidden The new value for hidden
-   * @param createdBy User ID who created the group
-   * @param createdAt Creation timestamp
+   * @param owner email of the user who created the group
    */
-  public Group(Long id, CharSequence name, CharSequence code, Boolean hidden, Long createdBy, Long createdAt) {
+  public Group(java.lang.CharSequence id, java.lang.CharSequence name, java.lang.Boolean hidden, java.lang.CharSequence owner) {
     this.id = id;
     this.name = name;
-    this.code = code;
     this.hidden = hidden;
-    this.createdBy = createdBy;
-    this.createdAt = createdAt;
+    this.owner = owner;
   }
 
   @Override
@@ -116,14 +107,12 @@ public class Group extends org.apache.avro.specific.SpecificRecordBase implement
 
   // Used by DatumWriter.  Applications should not call.
   @Override
-  public Object get(int field$) {
+  public java.lang.Object get(int field$) {
     switch (field$) {
     case 0: return id;
     case 1: return name;
-    case 2: return code;
-    case 3: return hidden;
-    case 4: return createdBy;
-    case 5: return createdAt;
+    case 2: return hidden;
+    case 3: return owner;
     default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
@@ -131,33 +120,30 @@ public class Group extends org.apache.avro.specific.SpecificRecordBase implement
   // Used by DatumReader.  Applications should not call.
   @Override
   @SuppressWarnings(value="unchecked")
-  public void put(int field$, Object value$) {
+  public void put(int field$, java.lang.Object value$) {
     switch (field$) {
-    case 0: id = (Long)value$; break;
-    case 1: name = (CharSequence)value$; break;
-    case 2: code = (CharSequence)value$; break;
-    case 3: hidden = (Boolean)value$; break;
-    case 4: createdBy = (Long)value$; break;
-    case 5: createdAt = (Long)value$; break;
+    case 0: id = (java.lang.CharSequence)value$; break;
+    case 1: name = (java.lang.CharSequence)value$; break;
+    case 2: hidden = (java.lang.Boolean)value$; break;
+    case 3: owner = (java.lang.CharSequence)value$; break;
     default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
 
   /**
    * Gets the value of the 'id' field.
-   * @return Group ID as primary key
+   * @return The value of the 'id' field.
    */
-  public long getId() {
+  public java.lang.CharSequence getId() {
     return id;
   }
 
 
   /**
    * Sets the value of the 'id' field.
-   * Group ID as primary key
    * @param value the value to set.
    */
-  public void setId(long value) {
+  public void setId(java.lang.CharSequence value) {
     this.id = value;
   }
 
@@ -165,7 +151,7 @@ public class Group extends org.apache.avro.specific.SpecificRecordBase implement
    * Gets the value of the 'name' field.
    * @return The value of the 'name' field.
    */
-  public CharSequence getName() {
+  public java.lang.CharSequence getName() {
     return name;
   }
 
@@ -174,26 +160,8 @@ public class Group extends org.apache.avro.specific.SpecificRecordBase implement
    * Sets the value of the 'name' field.
    * @param value the value to set.
    */
-  public void setName(CharSequence value) {
+  public void setName(java.lang.CharSequence value) {
     this.name = value;
-  }
-
-  /**
-   * Gets the value of the 'code' field.
-   * @return Unique code for joining the group
-   */
-  public CharSequence getCode() {
-    return code;
-  }
-
-
-  /**
-   * Sets the value of the 'code' field.
-   * Unique code for joining the group
-   * @param value the value to set.
-   */
-  public void setCode(CharSequence value) {
-    this.code = value;
   }
 
   /**
@@ -214,47 +182,29 @@ public class Group extends org.apache.avro.specific.SpecificRecordBase implement
   }
 
   /**
-   * Gets the value of the 'createdBy' field.
-   * @return User ID who created the group
+   * Gets the value of the 'owner' field.
+   * @return email of the user who created the group
    */
-  public long getCreatedBy() {
-    return createdBy;
+  public java.lang.CharSequence getOwner() {
+    return owner;
   }
 
 
   /**
-   * Sets the value of the 'createdBy' field.
-   * User ID who created the group
+   * Sets the value of the 'owner' field.
+   * email of the user who created the group
    * @param value the value to set.
    */
-  public void setCreatedBy(long value) {
-    this.createdBy = value;
-  }
-
-  /**
-   * Gets the value of the 'createdAt' field.
-   * @return Creation timestamp
-   */
-  public Long getCreatedAt() {
-    return createdAt;
-  }
-
-
-  /**
-   * Sets the value of the 'createdAt' field.
-   * Creation timestamp
-   * @param value the value to set.
-   */
-  public void setCreatedAt(Long value) {
-    this.createdAt = value;
+  public void setOwner(java.lang.CharSequence value) {
+    this.owner = value;
   }
 
   /**
    * Creates a new Group RecordBuilder.
    * @return A new Group RecordBuilder
    */
-  public static Builder newBuilder() {
-    return new Builder();
+  public static com.example.mediaservice.entity.Group.Builder newBuilder() {
+    return new com.example.mediaservice.entity.Group.Builder();
   }
 
   /**
@@ -262,11 +212,11 @@ public class Group extends org.apache.avro.specific.SpecificRecordBase implement
    * @param other The existing builder to copy.
    * @return A new Group RecordBuilder
    */
-  public static Builder newBuilder(Builder other) {
+  public static com.example.mediaservice.entity.Group.Builder newBuilder(com.example.mediaservice.entity.Group.Builder other) {
     if (other == null) {
-      return new Builder();
+      return new com.example.mediaservice.entity.Group.Builder();
     } else {
-      return new Builder(other);
+      return new com.example.mediaservice.entity.Group.Builder(other);
     }
   }
 
@@ -275,11 +225,11 @@ public class Group extends org.apache.avro.specific.SpecificRecordBase implement
    * @param other The existing instance to copy.
    * @return A new Group RecordBuilder
    */
-  public static Builder newBuilder(Group other) {
+  public static com.example.mediaservice.entity.Group.Builder newBuilder(com.example.mediaservice.entity.Group other) {
     if (other == null) {
-      return new Builder();
+      return new com.example.mediaservice.entity.Group.Builder();
     } else {
-      return new Builder(other);
+      return new com.example.mediaservice.entity.Group.Builder(other);
     }
   }
 
@@ -290,16 +240,11 @@ public class Group extends org.apache.avro.specific.SpecificRecordBase implement
   public static class Builder extends org.apache.avro.specific.SpecificRecordBuilderBase<Group>
     implements org.apache.avro.data.RecordBuilder<Group> {
 
-    /** Group ID as primary key */
-    private long id;
-    private CharSequence name;
-    /** Unique code for joining the group */
-    private CharSequence code;
+    private java.lang.CharSequence id;
+    private java.lang.CharSequence name;
     private boolean hidden;
-    /** User ID who created the group */
-    private long createdBy;
-    /** Creation timestamp */
-    private Long createdAt;
+    /** email of the user who created the group */
+    private java.lang.CharSequence owner;
 
     /** Creates a new Builder */
     private Builder() {
@@ -310,7 +255,7 @@ public class Group extends org.apache.avro.specific.SpecificRecordBase implement
      * Creates a Builder by copying an existing Builder.
      * @param other The existing Builder to copy.
      */
-    private Builder(Builder other) {
+    private Builder(com.example.mediaservice.entity.Group.Builder other) {
       super(other);
       if (isValidValue(fields()[0], other.id)) {
         this.id = data().deepCopy(fields()[0].schema(), other.id);
@@ -320,21 +265,13 @@ public class Group extends org.apache.avro.specific.SpecificRecordBase implement
         this.name = data().deepCopy(fields()[1].schema(), other.name);
         fieldSetFlags()[1] = other.fieldSetFlags()[1];
       }
-      if (isValidValue(fields()[2], other.code)) {
-        this.code = data().deepCopy(fields()[2].schema(), other.code);
+      if (isValidValue(fields()[2], other.hidden)) {
+        this.hidden = data().deepCopy(fields()[2].schema(), other.hidden);
         fieldSetFlags()[2] = other.fieldSetFlags()[2];
       }
-      if (isValidValue(fields()[3], other.hidden)) {
-        this.hidden = data().deepCopy(fields()[3].schema(), other.hidden);
+      if (isValidValue(fields()[3], other.owner)) {
+        this.owner = data().deepCopy(fields()[3].schema(), other.owner);
         fieldSetFlags()[3] = other.fieldSetFlags()[3];
-      }
-      if (isValidValue(fields()[4], other.createdBy)) {
-        this.createdBy = data().deepCopy(fields()[4].schema(), other.createdBy);
-        fieldSetFlags()[4] = other.fieldSetFlags()[4];
-      }
-      if (isValidValue(fields()[5], other.createdAt)) {
-        this.createdAt = data().deepCopy(fields()[5].schema(), other.createdAt);
-        fieldSetFlags()[5] = other.fieldSetFlags()[5];
       }
     }
 
@@ -342,7 +279,7 @@ public class Group extends org.apache.avro.specific.SpecificRecordBase implement
      * Creates a Builder by copying an existing Group instance
      * @param other The existing instance to copy.
      */
-    private Builder(Group other) {
+    private Builder(com.example.mediaservice.entity.Group other) {
       super(SCHEMA$, MODEL$);
       if (isValidValue(fields()[0], other.id)) {
         this.id = data().deepCopy(fields()[0].schema(), other.id);
@@ -352,41 +289,31 @@ public class Group extends org.apache.avro.specific.SpecificRecordBase implement
         this.name = data().deepCopy(fields()[1].schema(), other.name);
         fieldSetFlags()[1] = true;
       }
-      if (isValidValue(fields()[2], other.code)) {
-        this.code = data().deepCopy(fields()[2].schema(), other.code);
+      if (isValidValue(fields()[2], other.hidden)) {
+        this.hidden = data().deepCopy(fields()[2].schema(), other.hidden);
         fieldSetFlags()[2] = true;
       }
-      if (isValidValue(fields()[3], other.hidden)) {
-        this.hidden = data().deepCopy(fields()[3].schema(), other.hidden);
+      if (isValidValue(fields()[3], other.owner)) {
+        this.owner = data().deepCopy(fields()[3].schema(), other.owner);
         fieldSetFlags()[3] = true;
-      }
-      if (isValidValue(fields()[4], other.createdBy)) {
-        this.createdBy = data().deepCopy(fields()[4].schema(), other.createdBy);
-        fieldSetFlags()[4] = true;
-      }
-      if (isValidValue(fields()[5], other.createdAt)) {
-        this.createdAt = data().deepCopy(fields()[5].schema(), other.createdAt);
-        fieldSetFlags()[5] = true;
       }
     }
 
     /**
       * Gets the value of the 'id' field.
-      * Group ID as primary key
       * @return The value.
       */
-    public long getId() {
+    public java.lang.CharSequence getId() {
       return id;
     }
 
 
     /**
       * Sets the value of the 'id' field.
-      * Group ID as primary key
       * @param value The value of 'id'.
       * @return This builder.
       */
-    public Builder setId(long value) {
+    public com.example.mediaservice.entity.Group.Builder setId(java.lang.CharSequence value) {
       validate(fields()[0], value);
       this.id = value;
       fieldSetFlags()[0] = true;
@@ -395,7 +322,6 @@ public class Group extends org.apache.avro.specific.SpecificRecordBase implement
 
     /**
       * Checks whether the 'id' field has been set.
-      * Group ID as primary key
       * @return True if the 'id' field has been set, false otherwise.
       */
     public boolean hasId() {
@@ -405,10 +331,10 @@ public class Group extends org.apache.avro.specific.SpecificRecordBase implement
 
     /**
       * Clears the value of the 'id' field.
-      * Group ID as primary key
       * @return This builder.
       */
-    public Builder clearId() {
+    public com.example.mediaservice.entity.Group.Builder clearId() {
+      id = null;
       fieldSetFlags()[0] = false;
       return this;
     }
@@ -417,7 +343,7 @@ public class Group extends org.apache.avro.specific.SpecificRecordBase implement
       * Gets the value of the 'name' field.
       * @return The value.
       */
-    public CharSequence getName() {
+    public java.lang.CharSequence getName() {
       return name;
     }
 
@@ -427,7 +353,7 @@ public class Group extends org.apache.avro.specific.SpecificRecordBase implement
       * @param value The value of 'name'.
       * @return This builder.
       */
-    public Builder setName(CharSequence value) {
+    public com.example.mediaservice.entity.Group.Builder setName(java.lang.CharSequence value) {
       validate(fields()[1], value);
       this.name = value;
       fieldSetFlags()[1] = true;
@@ -447,53 +373,9 @@ public class Group extends org.apache.avro.specific.SpecificRecordBase implement
       * Clears the value of the 'name' field.
       * @return This builder.
       */
-    public Builder clearName() {
+    public com.example.mediaservice.entity.Group.Builder clearName() {
       name = null;
       fieldSetFlags()[1] = false;
-      return this;
-    }
-
-    /**
-      * Gets the value of the 'code' field.
-      * Unique code for joining the group
-      * @return The value.
-      */
-    public CharSequence getCode() {
-      return code;
-    }
-
-
-    /**
-      * Sets the value of the 'code' field.
-      * Unique code for joining the group
-      * @param value The value of 'code'.
-      * @return This builder.
-      */
-    public Builder setCode(CharSequence value) {
-      validate(fields()[2], value);
-      this.code = value;
-      fieldSetFlags()[2] = true;
-      return this;
-    }
-
-    /**
-      * Checks whether the 'code' field has been set.
-      * Unique code for joining the group
-      * @return True if the 'code' field has been set, false otherwise.
-      */
-    public boolean hasCode() {
-      return fieldSetFlags()[2];
-    }
-
-
-    /**
-      * Clears the value of the 'code' field.
-      * Unique code for joining the group
-      * @return This builder.
-      */
-    public Builder clearCode() {
-      code = null;
-      fieldSetFlags()[2] = false;
       return this;
     }
 
@@ -511,10 +393,10 @@ public class Group extends org.apache.avro.specific.SpecificRecordBase implement
       * @param value The value of 'hidden'.
       * @return This builder.
       */
-    public Builder setHidden(boolean value) {
-      validate(fields()[3], value);
+    public com.example.mediaservice.entity.Group.Builder setHidden(boolean value) {
+      validate(fields()[2], value);
       this.hidden = value;
-      fieldSetFlags()[3] = true;
+      fieldSetFlags()[2] = true;
       return this;
     }
 
@@ -523,7 +405,7 @@ public class Group extends org.apache.avro.specific.SpecificRecordBase implement
       * @return True if the 'hidden' field has been set, false otherwise.
       */
     public boolean hasHidden() {
-      return fieldSetFlags()[3];
+      return fieldSetFlags()[2];
     }
 
 
@@ -531,95 +413,52 @@ public class Group extends org.apache.avro.specific.SpecificRecordBase implement
       * Clears the value of the 'hidden' field.
       * @return This builder.
       */
-    public Builder clearHidden() {
+    public com.example.mediaservice.entity.Group.Builder clearHidden() {
+      fieldSetFlags()[2] = false;
+      return this;
+    }
+
+    /**
+      * Gets the value of the 'owner' field.
+      * email of the user who created the group
+      * @return The value.
+      */
+    public java.lang.CharSequence getOwner() {
+      return owner;
+    }
+
+
+    /**
+      * Sets the value of the 'owner' field.
+      * email of the user who created the group
+      * @param value The value of 'owner'.
+      * @return This builder.
+      */
+    public com.example.mediaservice.entity.Group.Builder setOwner(java.lang.CharSequence value) {
+      validate(fields()[3], value);
+      this.owner = value;
+      fieldSetFlags()[3] = true;
+      return this;
+    }
+
+    /**
+      * Checks whether the 'owner' field has been set.
+      * email of the user who created the group
+      * @return True if the 'owner' field has been set, false otherwise.
+      */
+    public boolean hasOwner() {
+      return fieldSetFlags()[3];
+    }
+
+
+    /**
+      * Clears the value of the 'owner' field.
+      * email of the user who created the group
+      * @return This builder.
+      */
+    public com.example.mediaservice.entity.Group.Builder clearOwner() {
+      owner = null;
       fieldSetFlags()[3] = false;
-      return this;
-    }
-
-    /**
-      * Gets the value of the 'createdBy' field.
-      * User ID who created the group
-      * @return The value.
-      */
-    public long getCreatedBy() {
-      return createdBy;
-    }
-
-
-    /**
-      * Sets the value of the 'createdBy' field.
-      * User ID who created the group
-      * @param value The value of 'createdBy'.
-      * @return This builder.
-      */
-    public Builder setCreatedBy(long value) {
-      validate(fields()[4], value);
-      this.createdBy = value;
-      fieldSetFlags()[4] = true;
-      return this;
-    }
-
-    /**
-      * Checks whether the 'createdBy' field has been set.
-      * User ID who created the group
-      * @return True if the 'createdBy' field has been set, false otherwise.
-      */
-    public boolean hasCreatedBy() {
-      return fieldSetFlags()[4];
-    }
-
-
-    /**
-      * Clears the value of the 'createdBy' field.
-      * User ID who created the group
-      * @return This builder.
-      */
-    public Builder clearCreatedBy() {
-      fieldSetFlags()[4] = false;
-      return this;
-    }
-
-    /**
-      * Gets the value of the 'createdAt' field.
-      * Creation timestamp
-      * @return The value.
-      */
-    public Long getCreatedAt() {
-      return createdAt;
-    }
-
-
-    /**
-      * Sets the value of the 'createdAt' field.
-      * Creation timestamp
-      * @param value The value of 'createdAt'.
-      * @return This builder.
-      */
-    public Builder setCreatedAt(Long value) {
-      validate(fields()[5], value);
-      this.createdAt = value;
-      fieldSetFlags()[5] = true;
-      return this;
-    }
-
-    /**
-      * Checks whether the 'createdAt' field has been set.
-      * Creation timestamp
-      * @return True if the 'createdAt' field has been set, false otherwise.
-      */
-    public boolean hasCreatedAt() {
-      return fieldSetFlags()[5];
-    }
-
-
-    /**
-      * Clears the value of the 'createdAt' field.
-      * Creation timestamp
-      * @return This builder.
-      */
-    public Builder clearCreatedAt() {
-      createdAt = null;
-      fieldSetFlags()[5] = false;
       return this;
     }
 
@@ -628,16 +467,14 @@ public class Group extends org.apache.avro.specific.SpecificRecordBase implement
     public Group build() {
       try {
         Group record = new Group();
-        record.id = fieldSetFlags()[0] ? this.id : (Long) defaultValue(fields()[0]);
-        record.name = fieldSetFlags()[1] ? this.name : (CharSequence) defaultValue(fields()[1]);
-        record.code = fieldSetFlags()[2] ? this.code : (CharSequence) defaultValue(fields()[2]);
-        record.hidden = fieldSetFlags()[3] ? this.hidden : (Boolean) defaultValue(fields()[3]);
-        record.createdBy = fieldSetFlags()[4] ? this.createdBy : (Long) defaultValue(fields()[4]);
-        record.createdAt = fieldSetFlags()[5] ? this.createdAt : (Long) defaultValue(fields()[5]);
+        record.id = fieldSetFlags()[0] ? this.id : (java.lang.CharSequence) defaultValue(fields()[0]);
+        record.name = fieldSetFlags()[1] ? this.name : (java.lang.CharSequence) defaultValue(fields()[1]);
+        record.hidden = fieldSetFlags()[2] ? this.hidden : (java.lang.Boolean) defaultValue(fields()[2]);
+        record.owner = fieldSetFlags()[3] ? this.owner : (java.lang.CharSequence) defaultValue(fields()[3]);
         return record;
       } catch (org.apache.avro.AvroMissingFieldException e) {
         throw e;
-      } catch (Exception e) {
+      } catch (java.lang.Exception e) {
         throw new org.apache.avro.AvroRuntimeException(e);
       }
     }
@@ -666,23 +503,13 @@ public class Group extends org.apache.avro.specific.SpecificRecordBase implement
   @Override public void customEncode(org.apache.avro.io.Encoder out)
     throws java.io.IOException
   {
-    out.writeLong(this.id);
+    out.writeString(this.id);
 
     out.writeString(this.name);
 
-    out.writeString(this.code);
-
     out.writeBoolean(this.hidden);
 
-    out.writeLong(this.createdBy);
-
-    if (this.createdAt == null) {
-      out.writeIndex(0);
-      out.writeNull();
-    } else {
-      out.writeIndex(1);
-      out.writeLong(this.createdAt);
-    }
+    out.writeString(this.owner);
 
   }
 
@@ -691,28 +518,19 @@ public class Group extends org.apache.avro.specific.SpecificRecordBase implement
   {
     org.apache.avro.Schema.Field[] fieldOrder = in.readFieldOrderIfDiff();
     if (fieldOrder == null) {
-      this.id = in.readLong();
+      this.id = in.readString(this.id instanceof Utf8 ? (Utf8)this.id : null);
 
       this.name = in.readString(this.name instanceof Utf8 ? (Utf8)this.name : null);
 
-      this.code = in.readString(this.code instanceof Utf8 ? (Utf8)this.code : null);
-
       this.hidden = in.readBoolean();
 
-      this.createdBy = in.readLong();
-
-      if (in.readIndex() != 1) {
-        in.readNull();
-        this.createdAt = null;
-      } else {
-        this.createdAt = in.readLong();
-      }
+      this.owner = in.readString(this.owner instanceof Utf8 ? (Utf8)this.owner : null);
 
     } else {
-      for (int i = 0; i < 6; i++) {
+      for (int i = 0; i < 4; i++) {
         switch (fieldOrder[i].pos()) {
         case 0:
-          this.id = in.readLong();
+          this.id = in.readString(this.id instanceof Utf8 ? (Utf8)this.id : null);
           break;
 
         case 1:
@@ -720,24 +538,11 @@ public class Group extends org.apache.avro.specific.SpecificRecordBase implement
           break;
 
         case 2:
-          this.code = in.readString(this.code instanceof Utf8 ? (Utf8)this.code : null);
-          break;
-
-        case 3:
           this.hidden = in.readBoolean();
           break;
 
-        case 4:
-          this.createdBy = in.readLong();
-          break;
-
-        case 5:
-          if (in.readIndex() != 1) {
-            in.readNull();
-            this.createdAt = null;
-          } else {
-            this.createdAt = in.readLong();
-          }
+        case 3:
+          this.owner = in.readString(this.owner instanceof Utf8 ? (Utf8)this.owner : null);
           break;
 
         default:
@@ -750,12 +555,10 @@ public class Group extends org.apache.avro.specific.SpecificRecordBase implement
   @Override
   public int hashCode() {
     int result = 1;
-    result = 31 * result + Long.hashCode(id);
+    result = 31 * result + (id == null ? 0 : id.hashCode());
     result = 31 * result + (name == null ? 0 : name.hashCode());
-    result = 31 * result + (code == null ? 0 : code.hashCode());
     result = 31 * result + Boolean.hashCode(hidden);
-    result = 31 * result + Long.hashCode(createdBy);
-    result = 31 * result + (createdAt == null ? 0 : createdAt.hashCode());
+    result = 31 * result + (owner == null ? 0 : owner.hashCode());
     return result;
   }
 
@@ -768,22 +571,16 @@ public class Group extends org.apache.avro.specific.SpecificRecordBase implement
       return false;
     }
     Group other = (Group) o;
-    if (this.id != other.id) {
+    if (Utf8.compareSequences(this.id, other.id) != 0) {
       return false;
     }
     if (Utf8.compareSequences(this.name, other.name) != 0) {
       return false;
     }
-    if (Utf8.compareSequences(this.code, other.code) != 0) {
-      return false;
-    }
     if (this.hidden != other.hidden) {
       return false;
     }
-    if (this.createdBy != other.createdBy) {
-      return false;
-    }
-    if (!java.util.Objects.equals(this.createdAt, other.createdAt)) {
+    if (Utf8.compareSequences(this.owner, other.owner) != 0) {
       return false;
     }
     return true;

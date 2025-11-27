@@ -1,159 +1,138 @@
 package com.example.mediaservice.controller;
 
-import com.example.mediaservice.dto.CreateGroupRequest;
-import com.example.mediaservice.dto.JoinGroupRequest;
 import com.example.mediaservice.entity.Group;
-import com.example.mediaservice.entity.relationship.RelationshipType;
+import com.example.mediaservice.entity.relationship.UserChannel;
 import com.example.mediaservice.entity.relationship.UserGroup;
+import com.example.mediaservice.producer.ChannelProducerService;
 import com.example.mediaservice.producer.GroupProducerService;
+import com.example.mediaservice.producer.UserChannelProducerService;
 import com.example.mediaservice.producer.UserGroupProducerService;
+import com.example.mediaservice.service.ChannelRedisService;
 import com.example.mediaservice.service.GroupRedisService;
+import com.example.mediaservice.service.TokenService;
 import com.example.mediaservice.service.UserGroupRedisService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
-import java.util.Random;
+import java.util.Optional;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/group-events")
+@RequestMapping("/group")
+@AllArgsConstructor
 public class GroupController {
 
-    @Autowired
-    private GroupProducerService groupProducerService;
+    private final UserGroupProducerService userGroupProducerService;
+    private final UserChannelProducerService userChannelProducerService;
+    private final GroupRedisService groupRedisService;
+    private final UserGroupRedisService userGroupRedisService;
+    private final ChannelRedisService channelRedisService;
+    private final TokenService tokenService;
 
-    @Autowired
-    private UserGroupProducerService userGroupProducerService;
-
-    @Autowired
-    private GroupRedisService groupRedisService;
-
-    @Autowired
-    private UserGroupRedisService userGroupRedisService;
-
-    /**
-     * Create a new group and establish user-group relationship
-     */
-    @PostMapping("/create")
-    public ResponseEntity<String> createGroup(@RequestBody CreateGroupRequest request) {
+    @PostMapping("/join/{groupId}")
+    public ResponseEntity<String> joinGroup(@PathVariable String groupId) {
         try {
-            // Generate unique group ID and code
-            Long groupId = System.currentTimeMillis();
-            String groupCode = generateGroupCode();
+            String userEmail = tokenService.getEmailFromToken();
 
-            // Create Group event
-            Group group = Group.newBuilder()
-                    .setId(groupId)
-                    .setName(request.getName())
-                    .setCode(groupCode)
-                    .setHidden(request.isHidden())
-                    .setCreatedBy(request.getUserId())
-                    .setCreatedAt(System.currentTimeMillis())
-                    .build();
-
-            // Send group-created event
-            groupProducerService.sendGroupCreated(group);
-
-            // Create UserGroup relationship event
-            UserGroup userGroup = UserGroup.newBuilder()
-                    .setUserId(request.getUserId())
-                    .setGroupId(groupId)
-                    .setRelationshipType(RelationshipType.CREATE)
-                    .build();
-
-            // Send user-group-create event
-            userGroupProducerService.sendUserGroupEvent(userGroup);
-
-            return ResponseEntity.accepted().body("Group creation request accepted. Group ID: " + groupId + ", Code: " + groupCode);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to process group creation request: " + e.getMessage());
-        }
-    }
-
-    /**
-     * Join a group using group code
-     */
-    @PostMapping("/join")
-    public ResponseEntity<String> joinGroup(@RequestBody JoinGroupRequest request) {
-        try {
-            // Check if group exists by code
-            Map<String, Object> group = groupRedisService.getGroupByCode(request.getGroupCode());
-            if (group == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body("Group not found with code: " + request.getGroupCode());
+            if (userEmail == null || userEmail.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("Unable to extract email from token");
             }
 
-            Long groupId = Long.parseLong(group.get("id").toString());
-
             // Check if user is already in the group
-            Map<String, Object> existingRelationship = userGroupRedisService.getUserGroup(request.getUserId(), groupId);
-            if (existingRelationship != null) {
+            if (groupRedisService.isUserInGroup(userEmail, groupId)) {
                 return ResponseEntity.status(HttpStatus.CONFLICT)
                         .body("User is already a member of this group");
             }
 
             // Create UserGroup relationship event
             UserGroup userGroup = UserGroup.newBuilder()
-                    .setUserId(request.getUserId())
+                    .setUserId(userEmail)
                     .setGroupId(groupId)
-                    .setRelationshipType(RelationshipType.JOIN)
+                    .setUserGroupRelationship(com.example.mediaservice.entity.relationship.UserGroupRelationship.JOIN)
                     .build();
 
             // Send user-group-join event
             userGroupProducerService.sendUserGroupEvent(userGroup);
 
-            return ResponseEntity.accepted().body("Group join request accepted. User: " + request.getUserId() + ", Group: " + groupId);
+            // Find the default "general" channel for this group
+            Map<String, Object> defaultChannel = channelRedisService.getDefaultChannelForGroup(groupId);
+            if (defaultChannel != null && !defaultChannel.isEmpty()) {
+                String channelId = defaultChannel.get("channelId").toString();
+
+                // Add user to the general channel
+                UserChannel userChannel = UserChannel.newBuilder()
+                        .setUserId(userEmail)
+                        .setChannelId(channelId)
+                        .setUserChannelRelationship(com.example.mediaservice.entity.relationship.UserChannelRelationship.JOIN)
+                        .build();
+
+                // Send user-channel event
+                userChannelProducerService.sendUserChannelEvent(userChannel);
+
+                return ResponseEntity.accepted().body("Group join request accepted. User: " + userEmail + ", Group: " + groupId + ", added to 'general' channel");
+            } else {
+                return ResponseEntity.accepted().body("Group join request accepted. User: " + userEmail + ", Group: " + groupId + " (warning: no default channel found)");
+            }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Failed to process group join request: " + e.getMessage());
         }
     }
 
-    /**
-     * Get group information by ID
-     */
     @GetMapping("/{groupId}")
-    public ResponseEntity<?> getGroup(@PathVariable Long groupId) {
+    public ResponseEntity<?> getGroup(@PathVariable String groupId) {
         try {
-            Map<String, Object> group = groupRedisService.getGroup(groupId);
-            if (group == null || group.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body("Group not found in cache");
+            String userEmail = tokenService.getEmailFromToken();
+
+            if (userEmail == null || userEmail.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("Unable to extract email from token");
             }
-            return ResponseEntity.ok(group);
+
+
+            List<Group> groups = groupRedisService.getGroupsByUser(userEmail);
+            Optional<Group> group = groups.stream()
+                    .filter(g -> g.getId().toString().equals(groupId))
+                    .findFirst();
+
+            if (group.isPresent()) {
+                return ResponseEntity.ok(group.get());
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Group not found for this user in cache");
+            }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Failed to retrieve group from cache: " + e.getMessage());
         }
     }
 
-    /**
-     * Get group information by code
-     */
-    @GetMapping("/code/{groupCode}")
-    public ResponseEntity<?> getGroupByCode(@PathVariable String groupCode) {
+    @GetMapping("/my-groups")
+    public ResponseEntity<?> getMyGroups() {
         try {
-            Map<String, Object> group = groupRedisService.getGroupByCode(groupCode);
-            if (group == null || group.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body("Group not found with code: " + groupCode);
+            String userEmail = tokenService.getEmailFromToken();
+
+            if (userEmail == null || userEmail.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("Unable to extract email from token");
             }
-            return ResponseEntity.ok(group);
+
+
+            List<Group> groups = groupRedisService.getGroupsByUser(userEmail);
+            return ResponseEntity.ok(groups);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to retrieve group from cache: " + e.getMessage());
+                    .body("Failed to retrieve groups from cache: " + e.getMessage());
         }
     }
 
-    /**
-     * Get all users in a group
-     */
     @GetMapping("/{groupId}/users")
-    public ResponseEntity<?> getGroupUsers(@PathVariable Long groupId) {
+    public ResponseEntity<?> getGroupUsers(@PathVariable String groupId) {
         try {
             Set<Object> users = userGroupRedisService.getGroupUsers(groupId);
             return ResponseEntity.ok(users);
@@ -163,11 +142,8 @@ public class GroupController {
         }
     }
 
-    /**
-     * Get user-group relationship
-     */
     @GetMapping("/relationship/{userId}/{groupId}")
-    public ResponseEntity<?> getUserGroupRelationship(@PathVariable Long userId, @PathVariable Long groupId) {
+    public ResponseEntity<?> getUserGroupRelationship(@PathVariable String userId, @PathVariable String groupId) {
         try {
             Map<String, Object> relationship = userGroupRedisService.getUserGroup(userId, groupId);
             if (relationship == null || relationship.isEmpty()) {
@@ -180,18 +156,4 @@ public class GroupController {
                     .body("Failed to retrieve user-group relationship from cache: " + e.getMessage());
         }
     }
-
-    /**
-     * Generate a random 6-character group code
-     */
-    private String generateGroupCode() {
-        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        Random random = new Random();
-        StringBuilder code = new StringBuilder();
-        for (int i = 0; i < 6; i++) {
-            code.append(chars.charAt(random.nextInt(chars.length())));
-        }
-        return code.toString();
-    }
 }
-

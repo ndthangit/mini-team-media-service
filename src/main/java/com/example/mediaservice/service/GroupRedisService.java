@@ -1,110 +1,122 @@
 package com.example.mediaservice.service;
 
 import com.example.mediaservice.entity.Group;
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class GroupRedisService {
 
-    private static final String GROUP_HASH_KEY = "group";
-    private static final String GROUP_CODE_HASH_KEY = "group:code";
+    private static final String USER_GROUPS_KEY_PREFIX = "user:";
+    private static final String USER_GROUPS_KEY_SUFFIX = ":groups";
 
-    private final RedisTemplate<String, Object> redisTemplate;
+    // Assuming RedisTemplate is configured for <String, String>
+    // If it's <String, Object>, casting or serializer adjustments might be needed.
+    private final RedisTemplate<String, String> redisTemplate;
+    private final ObjectMapper objectMapper;
 
-    public void saveGroup(Group group) {
+    private String getUserGroupsKey(String userEmail) {
+        return USER_GROUPS_KEY_PREFIX + userEmail + USER_GROUPS_KEY_SUFFIX;
+    }
+
+    /**
+     * Adds or updates a group for a specific user using HSET.
+     * The group object is stored as a JSON string.
+     *
+     * @param userEmail The user's email, used to build the Redis key.
+     * @param group     The group to save. Its ID will be the hash field.
+     */
+    public void addGroupToUser(String userEmail, Group group) {
+        String key = getUserGroupsKey(userEmail);
+        String field = String.valueOf(group.getId());
         try {
-            HashOperations<String, String, Object> hashOps = redisTemplate.opsForHash();
-            String groupKey = String.valueOf(group.getId());
-
-            Map<String, Object> groupMap = new HashMap<>();
-            groupMap.put("id", String.valueOf(group.getId()));
-            groupMap.put("name", group.getName() != null ? group.getName().toString() : null);
-            groupMap.put("code", group.getCode() != null ? group.getCode().toString() : null);
-            groupMap.put("hidden", String.valueOf(group.getHidden()));
-            groupMap.put("createdBy", String.valueOf(group.getCreatedBy()));
-            groupMap.put("createdAt", group.getCreatedAt() != null ? String.valueOf(group.getCreatedAt()) : null);
-
-            // Save group by ID
-            hashOps.putAll(GROUP_HASH_KEY + ":" + groupKey, groupMap);
-
-            // Save mapping from code to group ID for quick lookup
-            if (group.getCode() != null) {
-                hashOps.put(GROUP_CODE_HASH_KEY, group.getCode().toString(), groupKey);
-            }
-
-            log.info("Saved group to Redis with ID: {} and code: {}", groupKey, group.getCode());
+            String value = objectMapper.writeValueAsString(group);
+            HashOperations<String, String, String> hashOps = redisTemplate.opsForHash();
+            hashOps.put(key, field, value);
+            log.info("Added/updated group with ID {} for user '{}'", field, userEmail);
+        } catch (JsonProcessingException e) {
+            log.error("Error serializing group to JSON for user '{}': {}", userEmail, e.getMessage(), e);
+            throw new RuntimeException("Failed to serialize group for Redis", e);
         } catch (Exception e) {
-            log.error("Error saving group to Redis: {}", e.getMessage(), e);
+            log.error("Error saving group to Redis for user '{}': {}", userEmail, e.getMessage(), e);
             throw new RuntimeException("Failed to save group to Redis", e);
         }
     }
 
-    public Map<String, Object> getGroup(Long groupId) {
+    /**
+     * Checks if a group exists in the user's hash using HEXISTS. O(1) complexity.
+     *
+     * @param userEmail The user's email.
+     * @param groupId   The ID of the group to check.
+     * @return True if the user is in the group, false otherwise.
+     */
+    public boolean isUserInGroup(String userEmail, String groupId) {
+        String key = getUserGroupsKey(userEmail);
         try {
-            HashOperations<String, String, Object> hashOps = redisTemplate.opsForHash();
-            String groupKey = GROUP_HASH_KEY + ":" + groupId;
-            Map<String, Object> groupMap = hashOps.entries(groupKey);
-
-            if (groupMap.isEmpty()) {
-                log.warn("Group not found in Redis with ID: {}", groupId);
-                return null;
-            }
-
-            log.info("Retrieved group from Redis with ID: {}", groupId);
-            return groupMap;
+            HashOperations<String, String, String> hashOps = redisTemplate.opsForHash();
+            return hashOps.hasKey(key, groupId);
         } catch (Exception e) {
-            log.error("Error retrieving group from Redis: {}", e.getMessage(), e);
-            throw new RuntimeException("Failed to retrieve group from Redis", e);
+            log.error("Error checking group existence in Redis for user '{}': {}", userEmail, e.getMessage(), e);
+            throw new RuntimeException("Failed to check group existence in Redis", e);
         }
     }
 
-    public Map<String, Object> getGroupByCode(String code) {
+    /**
+     * Retrieves all groups for a specific user using HVALS.
+     *
+     * @param userEmail The user's email.
+     * @return A list of Group objects.
+     */
+    public List<Group> getGroupsByUser(String userEmail) {
+        String key = getUserGroupsKey(userEmail);
         try {
-            HashOperations<String, String, Object> hashOps = redisTemplate.opsForHash();
+            HashOperations<String, String, String> hashOps = redisTemplate.opsForHash();
+            List<String> groupJsonList = hashOps.values(key);
 
-            // Get group ID from code mapping
-            Object groupIdObj = hashOps.get(GROUP_CODE_HASH_KEY, code);
-            if (groupIdObj == null) {
-                log.warn("Group not found in Redis with code: {}", code);
-                return null;
-            }
-
-            String groupId = groupIdObj.toString();
-            String groupKey = GROUP_HASH_KEY + ":" + groupId;
-            Map<String, Object> groupMap = hashOps.entries(groupKey);
-
-            if (groupMap.isEmpty()) {
-                log.warn("Group not found in Redis with ID: {}", groupId);
-                return null;
-            }
-
-            log.info("Retrieved group from Redis with code: {}", code);
-            return groupMap;
+            return groupJsonList.stream()
+                    .map(json -> {
+                        try {
+                            return objectMapper.readValue(json, Group.class);
+                        } catch (IOException e) {
+                            log.error("Error deserializing group JSON for user '{}': {}", userEmail, e.getMessage());
+                            return null; // Skip corrupted data
+                        }
+                    })
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
         } catch (Exception e) {
-            log.error("Error retrieving group by code from Redis: {}", e.getMessage(), e);
-            throw new RuntimeException("Failed to retrieve group by code from Redis", e);
+            log.error("Error retrieving groups from Redis for user '{}': {}", userEmail, e.getMessage(), e);
+            throw new RuntimeException("Failed to retrieve groups from Redis", e);
         }
     }
 
-    public void deleteGroup(Long groupId) {
+    /**
+     * Removes a specific group from a user's hash using HDEL.
+     *
+     * @param userEmail The user's email.
+     * @param groupId   The ID of the group to remove.
+     */
+    public void removeGroupFromUser(String userEmail, String groupId) {
+        String key = getUserGroupsKey(userEmail);
         try {
-            String groupKey = GROUP_HASH_KEY + ":" + groupId;
-            redisTemplate.delete(groupKey);
-            log.info("Deleted group from Redis with ID: {}", groupId);
+            HashOperations<String, String, String> hashOps = redisTemplate.opsForHash();
+            hashOps.delete(key, groupId);
+            log.info("Deleted group with ID {} for user '{}'", groupId, userEmail);
         } catch (Exception e) {
-            log.error("Error deleting group from Redis: {}", e.getMessage(), e);
+            log.error("Error deleting group from Redis for user '{}': {}", userEmail, e.getMessage(), e);
             throw new RuntimeException("Failed to delete group from Redis", e);
         }
     }
 }
-
-

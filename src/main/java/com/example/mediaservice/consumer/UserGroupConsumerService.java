@@ -25,7 +25,7 @@ public class UserGroupConsumerService {
         try {
             userGroupRedisService.saveUserGroup(userGroup);
             logger.info("Successfully saved user-group relationship to Redis: User={}, Group={}, Type={}",
-                    userGroup.getUserId(), userGroup.getGroupId(), userGroup.getRelationshipType());
+                    userGroup.getUserId(), userGroup.getGroupId(), userGroup.getUserGroupRelationship());
         } catch (Exception e) {
             logger.error("Failed to save user-group relationship to Redis: {}", e.getMessage(), e);
         }

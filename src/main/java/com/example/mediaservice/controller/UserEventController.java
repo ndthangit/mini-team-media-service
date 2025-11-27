@@ -18,15 +18,16 @@ public class UserEventController {
     private UserProducerService userProducerService;
 
 
+
     @PostMapping("/update")
     public ResponseEntity<String> updateUser(@RequestBody User user) {
-        try {
+//        try {
             userProducerService.send(user);
             return ResponseEntity.accepted().body("User update request accepted");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to process user update request");
-        }
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                    .body("Failed to process user update request");
+//        }
     }
 
 

@@ -32,7 +32,7 @@ public class UserGroupRedisService {
             Map<String, Object> userGroupMap = new HashMap<>();
             userGroupMap.put("userId", String.valueOf(userGroup.getUserId()));
             userGroupMap.put("groupId", String.valueOf(userGroup.getGroupId()));
-            userGroupMap.put("relationshipType", userGroup.getRelationshipType().toString());
+            userGroupMap.put("relationshipType", userGroup.getUserGroupRelationship().toString());
 
             // Save user-group relationship
             hashOps.putAll(USER_GROUP_HASH_KEY + ":" + userGroupKey, userGroupMap);
@@ -41,14 +41,14 @@ public class UserGroupRedisService {
             setOps.add(GROUP_USERS_SET_KEY + ":" + userGroup.getGroupId(), String.valueOf(userGroup.getUserId()));
 
             log.info("Saved user-group relationship to Redis - User: {}, Group: {}, Type: {}",
-                    userGroup.getUserId(), userGroup.getGroupId(), userGroup.getRelationshipType());
+                    userGroup.getUserId(), userGroup.getGroupId(), userGroup.getUserGroupRelationship());
         } catch (Exception e) {
             log.error("Error saving user-group relationship to Redis: {}", e.getMessage(), e);
             throw new RuntimeException("Failed to save user-group relationship to Redis", e);
         }
     }
 
-    public Map<String, Object> getUserGroup(Long userId, Long groupId) {
+    public Map<String, Object> getUserGroup(String userId, String groupId) {
         try {
             HashOperations<String, String, Object> hashOps = redisTemplate.opsForHash();
             String userGroupKey = USER_GROUP_HASH_KEY + ":" + userId + ":" + groupId;
@@ -67,7 +67,7 @@ public class UserGroupRedisService {
         }
     }
 
-    public Set<Object> getGroupUsers(Long groupId) {
+    public Set<Object> getGroupUsers(String groupId) {
         try {
             SetOperations<String, Object> setOps = redisTemplate.opsForSet();
             String groupUsersKey = GROUP_USERS_SET_KEY + ":" + groupId;
@@ -81,7 +81,7 @@ public class UserGroupRedisService {
         }
     }
 
-    public void deleteUserGroup(Long userId, Long groupId) {
+    public void deleteUserGroup(String userId, String groupId) {
         try {
             HashOperations<String, String, Object> hashOps = redisTemplate.opsForHash();
             SetOperations<String, Object> setOps = redisTemplate.opsForSet();
@@ -99,4 +99,3 @@ public class UserGroupRedisService {
         }
     }
 }
-

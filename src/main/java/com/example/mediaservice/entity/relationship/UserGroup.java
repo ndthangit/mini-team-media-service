@@ -5,17 +5,18 @@
  */
 package com.example.mediaservice.entity.relationship;
 
-import org.apache.avro.message.BinaryMessageDecoder;
-import org.apache.avro.message.BinaryMessageEncoder;
-import org.apache.avro.message.SchemaStore;
 import org.apache.avro.specific.SpecificData;
+import org.apache.avro.util.Utf8;
+import org.apache.avro.message.BinaryMessageEncoder;
+import org.apache.avro.message.BinaryMessageDecoder;
+import org.apache.avro.message.SchemaStore;
 
 @org.apache.avro.specific.AvroGenerated
 public class UserGroup extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = -564126024783108314L;
+  private static final long serialVersionUID = -8014648496299711002L;
 
 
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"UserGroup\",\"namespace\":\"com.example.mediaservice.entity.relationship\",\"fields\":[{\"name\":\"userId\",\"type\":\"long\"},{\"name\":\"groupId\",\"type\":\"long\"},{\"name\":\"relationshipType\",\"type\":{\"type\":\"enum\",\"name\":\"RelationshipType\",\"symbols\":[\"CREATE\",\"JOIN\"]}}]}");
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"UserGroup\",\"namespace\":\"com.example.mediaservice.entity.relationship\",\"fields\":[{\"name\":\"userId\",\"type\":\"string\"},{\"name\":\"groupId\",\"type\":\"string\"},{\"name\":\"UserGroupRelationship\",\"type\":{\"type\":\"enum\",\"name\":\"UserGroupRelationship\",\"symbols\":[\"CREATE\",\"JOIN\"]}}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static final SpecificData MODEL$ = new SpecificData();
@@ -71,9 +72,9 @@ public class UserGroup extends org.apache.avro.specific.SpecificRecordBase imple
     return DECODER.decode(b);
   }
 
-  private long userId;
-  private long groupId;
-  private RelationshipType relationshipType;
+  private java.lang.CharSequence userId;
+  private java.lang.CharSequence groupId;
+  private com.example.mediaservice.entity.relationship.UserGroupRelationship UserGroupRelationship;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -86,12 +87,12 @@ public class UserGroup extends org.apache.avro.specific.SpecificRecordBase imple
    * All-args constructor.
    * @param userId The new value for userId
    * @param groupId The new value for groupId
-   * @param relationshipType The new value for relationshipType
+   * @param UserGroupRelationship The new value for UserGroupRelationship
    */
-  public UserGroup(Long userId, Long groupId, RelationshipType relationshipType) {
+  public UserGroup(java.lang.CharSequence userId, java.lang.CharSequence groupId, com.example.mediaservice.entity.relationship.UserGroupRelationship UserGroupRelationship) {
     this.userId = userId;
     this.groupId = groupId;
-    this.relationshipType = relationshipType;
+    this.UserGroupRelationship = UserGroupRelationship;
   }
 
   @Override
@@ -102,11 +103,11 @@ public class UserGroup extends org.apache.avro.specific.SpecificRecordBase imple
 
   // Used by DatumWriter.  Applications should not call.
   @Override
-  public Object get(int field$) {
+  public java.lang.Object get(int field$) {
     switch (field$) {
     case 0: return userId;
     case 1: return groupId;
-    case 2: return relationshipType;
+    case 2: return UserGroupRelationship;
     default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
@@ -114,11 +115,11 @@ public class UserGroup extends org.apache.avro.specific.SpecificRecordBase imple
   // Used by DatumReader.  Applications should not call.
   @Override
   @SuppressWarnings(value="unchecked")
-  public void put(int field$, Object value$) {
+  public void put(int field$, java.lang.Object value$) {
     switch (field$) {
-    case 0: userId = (Long)value$; break;
-    case 1: groupId = (Long)value$; break;
-    case 2: relationshipType = (RelationshipType)value$; break;
+    case 0: userId = (java.lang.CharSequence)value$; break;
+    case 1: groupId = (java.lang.CharSequence)value$; break;
+    case 2: UserGroupRelationship = (com.example.mediaservice.entity.relationship.UserGroupRelationship)value$; break;
     default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
@@ -127,7 +128,7 @@ public class UserGroup extends org.apache.avro.specific.SpecificRecordBase imple
    * Gets the value of the 'userId' field.
    * @return The value of the 'userId' field.
    */
-  public long getUserId() {
+  public java.lang.CharSequence getUserId() {
     return userId;
   }
 
@@ -136,7 +137,7 @@ public class UserGroup extends org.apache.avro.specific.SpecificRecordBase imple
    * Sets the value of the 'userId' field.
    * @param value the value to set.
    */
-  public void setUserId(long value) {
+  public void setUserId(java.lang.CharSequence value) {
     this.userId = value;
   }
 
@@ -144,7 +145,7 @@ public class UserGroup extends org.apache.avro.specific.SpecificRecordBase imple
    * Gets the value of the 'groupId' field.
    * @return The value of the 'groupId' field.
    */
-  public long getGroupId() {
+  public java.lang.CharSequence getGroupId() {
     return groupId;
   }
 
@@ -153,33 +154,33 @@ public class UserGroup extends org.apache.avro.specific.SpecificRecordBase imple
    * Sets the value of the 'groupId' field.
    * @param value the value to set.
    */
-  public void setGroupId(long value) {
+  public void setGroupId(java.lang.CharSequence value) {
     this.groupId = value;
   }
 
   /**
-   * Gets the value of the 'relationshipType' field.
-   * @return The value of the 'relationshipType' field.
+   * Gets the value of the 'UserGroupRelationship' field.
+   * @return The value of the 'UserGroupRelationship' field.
    */
-  public RelationshipType getRelationshipType() {
-    return relationshipType;
+  public com.example.mediaservice.entity.relationship.UserGroupRelationship getUserGroupRelationship() {
+    return UserGroupRelationship;
   }
 
 
   /**
-   * Sets the value of the 'relationshipType' field.
+   * Sets the value of the 'UserGroupRelationship' field.
    * @param value the value to set.
    */
-  public void setRelationshipType(RelationshipType value) {
-    this.relationshipType = value;
+  public void setUserGroupRelationship(com.example.mediaservice.entity.relationship.UserGroupRelationship value) {
+    this.UserGroupRelationship = value;
   }
 
   /**
    * Creates a new UserGroup RecordBuilder.
    * @return A new UserGroup RecordBuilder
    */
-  public static Builder newBuilder() {
-    return new Builder();
+  public static com.example.mediaservice.entity.relationship.UserGroup.Builder newBuilder() {
+    return new com.example.mediaservice.entity.relationship.UserGroup.Builder();
   }
 
   /**
@@ -187,11 +188,11 @@ public class UserGroup extends org.apache.avro.specific.SpecificRecordBase imple
    * @param other The existing builder to copy.
    * @return A new UserGroup RecordBuilder
    */
-  public static Builder newBuilder(Builder other) {
+  public static com.example.mediaservice.entity.relationship.UserGroup.Builder newBuilder(com.example.mediaservice.entity.relationship.UserGroup.Builder other) {
     if (other == null) {
-      return new Builder();
+      return new com.example.mediaservice.entity.relationship.UserGroup.Builder();
     } else {
-      return new Builder(other);
+      return new com.example.mediaservice.entity.relationship.UserGroup.Builder(other);
     }
   }
 
@@ -200,11 +201,11 @@ public class UserGroup extends org.apache.avro.specific.SpecificRecordBase imple
    * @param other The existing instance to copy.
    * @return A new UserGroup RecordBuilder
    */
-  public static Builder newBuilder(UserGroup other) {
+  public static com.example.mediaservice.entity.relationship.UserGroup.Builder newBuilder(com.example.mediaservice.entity.relationship.UserGroup other) {
     if (other == null) {
-      return new Builder();
+      return new com.example.mediaservice.entity.relationship.UserGroup.Builder();
     } else {
-      return new Builder(other);
+      return new com.example.mediaservice.entity.relationship.UserGroup.Builder(other);
     }
   }
 
@@ -215,9 +216,9 @@ public class UserGroup extends org.apache.avro.specific.SpecificRecordBase imple
   public static class Builder extends org.apache.avro.specific.SpecificRecordBuilderBase<UserGroup>
     implements org.apache.avro.data.RecordBuilder<UserGroup> {
 
-    private long userId;
-    private long groupId;
-    private RelationshipType relationshipType;
+    private java.lang.CharSequence userId;
+    private java.lang.CharSequence groupId;
+    private com.example.mediaservice.entity.relationship.UserGroupRelationship UserGroupRelationship;
 
     /** Creates a new Builder */
     private Builder() {
@@ -228,7 +229,7 @@ public class UserGroup extends org.apache.avro.specific.SpecificRecordBase imple
      * Creates a Builder by copying an existing Builder.
      * @param other The existing Builder to copy.
      */
-    private Builder(Builder other) {
+    private Builder(com.example.mediaservice.entity.relationship.UserGroup.Builder other) {
       super(other);
       if (isValidValue(fields()[0], other.userId)) {
         this.userId = data().deepCopy(fields()[0].schema(), other.userId);
@@ -238,8 +239,8 @@ public class UserGroup extends org.apache.avro.specific.SpecificRecordBase imple
         this.groupId = data().deepCopy(fields()[1].schema(), other.groupId);
         fieldSetFlags()[1] = other.fieldSetFlags()[1];
       }
-      if (isValidValue(fields()[2], other.relationshipType)) {
-        this.relationshipType = data().deepCopy(fields()[2].schema(), other.relationshipType);
+      if (isValidValue(fields()[2], other.UserGroupRelationship)) {
+        this.UserGroupRelationship = data().deepCopy(fields()[2].schema(), other.UserGroupRelationship);
         fieldSetFlags()[2] = other.fieldSetFlags()[2];
       }
     }
@@ -248,7 +249,7 @@ public class UserGroup extends org.apache.avro.specific.SpecificRecordBase imple
      * Creates a Builder by copying an existing UserGroup instance
      * @param other The existing instance to copy.
      */
-    private Builder(UserGroup other) {
+    private Builder(com.example.mediaservice.entity.relationship.UserGroup other) {
       super(SCHEMA$, MODEL$);
       if (isValidValue(fields()[0], other.userId)) {
         this.userId = data().deepCopy(fields()[0].schema(), other.userId);
@@ -258,8 +259,8 @@ public class UserGroup extends org.apache.avro.specific.SpecificRecordBase imple
         this.groupId = data().deepCopy(fields()[1].schema(), other.groupId);
         fieldSetFlags()[1] = true;
       }
-      if (isValidValue(fields()[2], other.relationshipType)) {
-        this.relationshipType = data().deepCopy(fields()[2].schema(), other.relationshipType);
+      if (isValidValue(fields()[2], other.UserGroupRelationship)) {
+        this.UserGroupRelationship = data().deepCopy(fields()[2].schema(), other.UserGroupRelationship);
         fieldSetFlags()[2] = true;
       }
     }
@@ -268,7 +269,7 @@ public class UserGroup extends org.apache.avro.specific.SpecificRecordBase imple
       * Gets the value of the 'userId' field.
       * @return The value.
       */
-    public long getUserId() {
+    public java.lang.CharSequence getUserId() {
       return userId;
     }
 
@@ -278,7 +279,7 @@ public class UserGroup extends org.apache.avro.specific.SpecificRecordBase imple
       * @param value The value of 'userId'.
       * @return This builder.
       */
-    public Builder setUserId(long value) {
+    public com.example.mediaservice.entity.relationship.UserGroup.Builder setUserId(java.lang.CharSequence value) {
       validate(fields()[0], value);
       this.userId = value;
       fieldSetFlags()[0] = true;
@@ -298,7 +299,8 @@ public class UserGroup extends org.apache.avro.specific.SpecificRecordBase imple
       * Clears the value of the 'userId' field.
       * @return This builder.
       */
-    public Builder clearUserId() {
+    public com.example.mediaservice.entity.relationship.UserGroup.Builder clearUserId() {
+      userId = null;
       fieldSetFlags()[0] = false;
       return this;
     }
@@ -307,7 +309,7 @@ public class UserGroup extends org.apache.avro.specific.SpecificRecordBase imple
       * Gets the value of the 'groupId' field.
       * @return The value.
       */
-    public long getGroupId() {
+    public java.lang.CharSequence getGroupId() {
       return groupId;
     }
 
@@ -317,7 +319,7 @@ public class UserGroup extends org.apache.avro.specific.SpecificRecordBase imple
       * @param value The value of 'groupId'.
       * @return This builder.
       */
-    public Builder setGroupId(long value) {
+    public com.example.mediaservice.entity.relationship.UserGroup.Builder setGroupId(java.lang.CharSequence value) {
       validate(fields()[1], value);
       this.groupId = value;
       fieldSetFlags()[1] = true;
@@ -337,47 +339,48 @@ public class UserGroup extends org.apache.avro.specific.SpecificRecordBase imple
       * Clears the value of the 'groupId' field.
       * @return This builder.
       */
-    public Builder clearGroupId() {
+    public com.example.mediaservice.entity.relationship.UserGroup.Builder clearGroupId() {
+      groupId = null;
       fieldSetFlags()[1] = false;
       return this;
     }
 
     /**
-      * Gets the value of the 'relationshipType' field.
+      * Gets the value of the 'UserGroupRelationship' field.
       * @return The value.
       */
-    public RelationshipType getRelationshipType() {
-      return relationshipType;
+    public com.example.mediaservice.entity.relationship.UserGroupRelationship getUserGroupRelationship() {
+      return UserGroupRelationship;
     }
 
 
     /**
-      * Sets the value of the 'relationshipType' field.
-      * @param value The value of 'relationshipType'.
+      * Sets the value of the 'UserGroupRelationship' field.
+      * @param value The value of 'UserGroupRelationship'.
       * @return This builder.
       */
-    public Builder setRelationshipType(RelationshipType value) {
+    public com.example.mediaservice.entity.relationship.UserGroup.Builder setUserGroupRelationship(com.example.mediaservice.entity.relationship.UserGroupRelationship value) {
       validate(fields()[2], value);
-      this.relationshipType = value;
+      this.UserGroupRelationship = value;
       fieldSetFlags()[2] = true;
       return this;
     }
 
     /**
-      * Checks whether the 'relationshipType' field has been set.
-      * @return True if the 'relationshipType' field has been set, false otherwise.
+      * Checks whether the 'UserGroupRelationship' field has been set.
+      * @return True if the 'UserGroupRelationship' field has been set, false otherwise.
       */
-    public boolean hasRelationshipType() {
+    public boolean hasUserGroupRelationship() {
       return fieldSetFlags()[2];
     }
 
 
     /**
-      * Clears the value of the 'relationshipType' field.
+      * Clears the value of the 'UserGroupRelationship' field.
       * @return This builder.
       */
-    public Builder clearRelationshipType() {
-      relationshipType = null;
+    public com.example.mediaservice.entity.relationship.UserGroup.Builder clearUserGroupRelationship() {
+      UserGroupRelationship = null;
       fieldSetFlags()[2] = false;
       return this;
     }
@@ -387,13 +390,13 @@ public class UserGroup extends org.apache.avro.specific.SpecificRecordBase imple
     public UserGroup build() {
       try {
         UserGroup record = new UserGroup();
-        record.userId = fieldSetFlags()[0] ? this.userId : (Long) defaultValue(fields()[0]);
-        record.groupId = fieldSetFlags()[1] ? this.groupId : (Long) defaultValue(fields()[1]);
-        record.relationshipType = fieldSetFlags()[2] ? this.relationshipType : (RelationshipType) defaultValue(fields()[2]);
+        record.userId = fieldSetFlags()[0] ? this.userId : (java.lang.CharSequence) defaultValue(fields()[0]);
+        record.groupId = fieldSetFlags()[1] ? this.groupId : (java.lang.CharSequence) defaultValue(fields()[1]);
+        record.UserGroupRelationship = fieldSetFlags()[2] ? this.UserGroupRelationship : (com.example.mediaservice.entity.relationship.UserGroupRelationship) defaultValue(fields()[2]);
         return record;
       } catch (org.apache.avro.AvroMissingFieldException e) {
         throw e;
-      } catch (Exception e) {
+      } catch (java.lang.Exception e) {
         throw new org.apache.avro.AvroRuntimeException(e);
       }
     }
@@ -422,11 +425,11 @@ public class UserGroup extends org.apache.avro.specific.SpecificRecordBase imple
   @Override public void customEncode(org.apache.avro.io.Encoder out)
     throws java.io.IOException
   {
-    out.writeLong(this.userId);
+    out.writeString(this.userId);
 
-    out.writeLong(this.groupId);
+    out.writeString(this.groupId);
 
-    out.writeEnum(this.relationshipType.ordinal());
+    out.writeEnum(this.UserGroupRelationship.ordinal());
 
   }
 
@@ -435,25 +438,25 @@ public class UserGroup extends org.apache.avro.specific.SpecificRecordBase imple
   {
     org.apache.avro.Schema.Field[] fieldOrder = in.readFieldOrderIfDiff();
     if (fieldOrder == null) {
-      this.userId = in.readLong();
+      this.userId = in.readString(this.userId instanceof Utf8 ? (Utf8)this.userId : null);
 
-      this.groupId = in.readLong();
+      this.groupId = in.readString(this.groupId instanceof Utf8 ? (Utf8)this.groupId : null);
 
-      this.relationshipType = RelationshipType.values()[in.readEnum()];
+      this.UserGroupRelationship = com.example.mediaservice.entity.relationship.UserGroupRelationship.values()[in.readEnum()];
 
     } else {
       for (int i = 0; i < 3; i++) {
         switch (fieldOrder[i].pos()) {
         case 0:
-          this.userId = in.readLong();
+          this.userId = in.readString(this.userId instanceof Utf8 ? (Utf8)this.userId : null);
           break;
 
         case 1:
-          this.groupId = in.readLong();
+          this.groupId = in.readString(this.groupId instanceof Utf8 ? (Utf8)this.groupId : null);
           break;
 
         case 2:
-          this.relationshipType = RelationshipType.values()[in.readEnum()];
+          this.UserGroupRelationship = com.example.mediaservice.entity.relationship.UserGroupRelationship.values()[in.readEnum()];
           break;
 
         default:
@@ -466,9 +469,9 @@ public class UserGroup extends org.apache.avro.specific.SpecificRecordBase imple
   @Override
   public int hashCode() {
     int result = 1;
-    result = 31 * result + Long.hashCode(userId);
-    result = 31 * result + Long.hashCode(groupId);
-    result = 31 * result + (relationshipType == null ? 0 : ((Enum) relationshipType).ordinal());
+    result = 31 * result + (userId == null ? 0 : userId.hashCode());
+    result = 31 * result + (groupId == null ? 0 : groupId.hashCode());
+    result = 31 * result + (UserGroupRelationship == null ? 0 : ((java.lang.Enum) UserGroupRelationship).ordinal());
     return result;
   }
 
@@ -481,13 +484,13 @@ public class UserGroup extends org.apache.avro.specific.SpecificRecordBase imple
       return false;
     }
     UserGroup other = (UserGroup) o;
-    if (this.userId != other.userId) {
+    if (Utf8.compareSequences(this.userId, other.userId) != 0) {
       return false;
     }
-    if (this.groupId != other.groupId) {
+    if (Utf8.compareSequences(this.groupId, other.groupId) != 0) {
       return false;
     }
-    if (!java.util.Objects.equals(this.relationshipType, other.relationshipType)) {
+    if (!java.util.Objects.equals(this.UserGroupRelationship, other.UserGroupRelationship)) {
       return false;
     }
     return true;

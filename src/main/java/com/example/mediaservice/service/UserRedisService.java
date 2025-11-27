@@ -31,6 +31,7 @@ public class UserRedisService {
             userMap.put("gender", user.getGender() != null ? String.valueOf(user.getGender()) : null);
             userMap.put("firstName", user.getFirstName() != null ? String.valueOf(user.getFirstName()) : null);
             userMap.put("lastName", user.getLastName() != null ? String.valueOf(user.getLastName()) : null);
+            userMap.put("occupation", user.getOccupation() != null ? String.valueOf(user.getOccupation()) : null);
 
             hashOps.putAll(USER_HASH_KEY + ":" + userKey, userMap);
             log.info("Saved user to Redis with key: {}", userKey);

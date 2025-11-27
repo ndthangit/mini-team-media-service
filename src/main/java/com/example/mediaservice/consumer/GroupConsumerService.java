@@ -23,7 +23,11 @@ public class GroupConsumerService {
         logger.info("Consumed record from topic='{}' key='{}' value='{}'", record.topic(), key, group);
 
         try {
-            groupRedisService.saveGroup(group);
+            if (group.getOwner() == null) {
+                logger.error("Group owner is null, cannot save to Redis. Group ID: {}", group.getId());
+                return;
+            }
+            groupRedisService.addGroupToUser(group.getOwner().toString(), group);
             logger.info("Successfully saved group to Redis: {}", group.getId());
         } catch (Exception e) {
             logger.error("Failed to save group to Redis: {}", e.getMessage(), e);
@@ -37,12 +41,14 @@ public class GroupConsumerService {
         logger.info("Consumed record from topic='{}' key='{}' value='{}'", record.topic(), key, group);
 
         try {
-            groupRedisService.saveGroup(group);
+            if (group.getOwner() == null) {
+                logger.error("Group owner is null, cannot update in Redis. Group ID: {}", group.getId());
+                return;
+            }
+            groupRedisService.addGroupToUser(group.getOwner().toString(), group);
             logger.info("Successfully updated group in Redis: {}", group.getId());
         } catch (Exception e) {
             logger.error("Failed to update group in Redis: {}", e.getMessage(), e);
         }
     }
 }
-
-

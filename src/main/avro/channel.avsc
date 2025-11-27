@@ -1,0 +1,22 @@
+{
+  "type": "record",
+  "name": "Channel",
+  "namespace": "com.example.mediaservice.entity",
+  "fields": [
+    {
+      "name": "channelId",
+      "type": "string",
+      "doc": "Channel ID as primary key"
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "doc": "Channel name (e.g., general, random, etc.)"
+    },
+    {
+      "name": "groupId",
+      "type": "string",
+      "doc": "Group ID that this channel belongs to"
+    }
+  ]
+}

@@ -1,7 +1,9 @@
 package com.example.mediaservice.config;
 
+import com.example.mediaservice.entity.Channel;
 import com.example.mediaservice.entity.Group;
 import com.example.mediaservice.entity.User;
+import com.example.mediaservice.entity.relationship.UserChannel;
 import com.example.mediaservice.entity.relationship.UserGroup;
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
@@ -39,6 +41,16 @@ public class KafkaConfig {
 
     @Bean
     public KafkaTemplate<String, UserGroup> userGroupTemplate(ProducerFactory<String, UserGroup> producerFactory) {
+        return new KafkaTemplate<>(producerFactory);
+    }
+
+    @Bean
+    public KafkaTemplate<String, Channel> channelTemplate(ProducerFactory<String, Channel> producerFactory) {
+        return new KafkaTemplate<>(producerFactory);
+    }
+
+    @Bean
+    public KafkaTemplate<String, UserChannel> userChannelTemplate(ProducerFactory<String, UserChannel> producerFactory) {
         return new KafkaTemplate<>(producerFactory);
     }
 
@@ -89,6 +101,48 @@ public class KafkaConfig {
         return factory;
     }
 
+    // Consumer Factory for Channel
+    @Bean
+    public ConsumerFactory<String, Channel> channelConsumerFactory() {
+        Map<String, Object> props = new HashMap<>();
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, "media-service-channel");
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
+        props.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl);
+        props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, true);
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        return new DefaultKafkaConsumerFactory<>(props);
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, Channel> channelKafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, Channel> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(channelConsumerFactory());
+        return factory;
+    }
+
+    // Consumer Factory for UserChannel
+    @Bean
+    public ConsumerFactory<String, UserChannel> userChannelConsumerFactory() {
+        Map<String, Object> props = new HashMap<>();
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, "media-service-user-channel");
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
+        props.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl);
+        props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, true);
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        return new DefaultKafkaConsumerFactory<>(props);
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, UserChannel> userChannelKafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, UserChannel> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(userChannelConsumerFactory());
+        return factory;
+    }
+
 //    @Bean
 //    public ConcurrentMessageListenerContainer<String, User> repliesContainer(
 //            ConsumerFactory<String, User> cf) {
@@ -128,6 +182,18 @@ public class KafkaConfig {
                         .replicas(1)
                         .build(),
                 TopicBuilder.name("user-group-join")
+                        .partitions(3)
+                        .replicas(1)
+                        .build(),
+                TopicBuilder.name("channel-created")
+                        .partitions(3)
+                        .replicas(1)
+                        .build(),
+                TopicBuilder.name("channel-updated")
+                        .partitions(3)
+                        .replicas(1)
+                        .build(),
+                TopicBuilder.name("user-channel-events")
                         .partitions(3)
                         .replicas(1)
                         .build()

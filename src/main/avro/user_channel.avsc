@@ -1,23 +1,26 @@
 {
   "type": "record",
-  "name": "UserGroup",
+  "name": "UserChannel",
   "namespace": "com.example.mediaservice.entity.relationship",
   "fields": [
     {
       "name": "userId",
-      "type": "string"
+      "type": "string",
+      "doc": "User ID"
     },
     {
-      "name": "groupId",
-      "type": "string"
+      "name": "channelId",
+      "type": "string",
+      "doc": "Channel ID"
     },
     {
-      "name": "UserGroupRelationship",
+      "name": "UserChannelRelationship",
       "type": {
         "type": "enum",
-        "name": "UserGroupRelationship",
+        "name": "UserChannelRelationship",
         "symbols": ["CREATE", "JOIN"]
       }
     }
   ]
 }
+

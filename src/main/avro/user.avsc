@@ -17,6 +17,11 @@
       "type": "string"
     },
     {
+      "name": "occupation",
+      "type": "string",
+      "default": ""
+    },
+    {
       "name": "firstName",
       "type": "string"
     },
@@ -29,18 +34,6 @@
       "type": ["null", "int"],
       "default": null,
       "doc": "Version for optimistic locking"
-    },
-    {
-      "name": "createdAt",
-      "type": ["null", "long"],
-      "default": null,
-      "doc": "Creation timestamp"
-    },
-    {
-      "name": "lastModified",
-      "type": ["null", "long"],
-      "default": null,
-      "doc": "Last modified timestamp"
     }
   ]
 }
