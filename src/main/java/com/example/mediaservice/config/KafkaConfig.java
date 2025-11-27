@@ -23,11 +23,11 @@ import java.util.Map;
 @Configuration
 public class KafkaConfig {
 
-    @Value("${spring.kafka.bootstrap-servers}")
-    private String bootstrapServers;
-
-    @Value("${spring.kafka.properties.schema.registry.url}")
-    private String schemaRegistryUrl;
+//    @Value("${spring.kafka.bootstrap-servers}")
+//    private String bootstrapServers;
+//
+//    @Value("${spring.kafka.properties.schema.registry.url}")
+//    private String schemaRegistryUrl;
 
     @Bean
     public KafkaTemplate<String, User> userTemplate(ProducerFactory<String, User> producerFactory) {
@@ -59,89 +59,89 @@ public class KafkaConfig {
         return new KafkaTemplate<>(producerFactory);
     }
 
-    // Consumer Factory for Group
-    @Bean
-    public ConsumerFactory<String, Group> groupConsumerFactory() {
-        Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, "media-service-group");
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
-        props.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl);
-        props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, true);
-        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-        return new DefaultKafkaConsumerFactory<>(props);
-    }
+//    // Consumer Factory for Group
+//    @Bean
+//    public ConsumerFactory<String, Group> groupConsumerFactory() {
+//        Map<String, Object> props = new HashMap<>();
+//        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+//        props.put(ConsumerConfig.GROUP_ID_CONFIG, "media-service-group");
+//        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+//        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
+//        props.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl);
+//        props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, "true");
+//        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+//        return new DefaultKafkaConsumerFactory<>(props);
+//    }
+//
+//    @Bean
+//    public ConcurrentKafkaListenerContainerFactory<String, Group> groupKafkaListenerContainerFactory() {
+//        ConcurrentKafkaListenerContainerFactory<String, Group> factory = new ConcurrentKafkaListenerContainerFactory<>();
+//        factory.setConsumerFactory(groupConsumerFactory());
+//        return factory;
+//    }
+//
+//    // Consumer Factory for UserGroup
+//    @Bean
+//    public ConsumerFactory<String, UserGroup> userGroupConsumerFactory() {
+//        Map<String, Object> props = new HashMap<>();
+//        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+//        props.put(ConsumerConfig.GROUP_ID_CONFIG, "media-service-user-group");
+//        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+//        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
+//        props.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl);
+//        props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, "true");
+//        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+//        return new DefaultKafkaConsumerFactory<>(props);
+//    }
+//
+//    @Bean
+//    public ConcurrentKafkaListenerContainerFactory<String, UserGroup> userGroupKafkaListenerContainerFactory() {
+//        ConcurrentKafkaListenerContainerFactory<String, UserGroup> factory = new ConcurrentKafkaListenerContainerFactory<>();
+//        factory.setConsumerFactory(userGroupConsumerFactory());
+//        return factory;
+//    }
+//
+//    // Consumer Factory for Channel
+//    @Bean
+//    public ConsumerFactory<String, Channel> channelConsumerFactory() {
+//        Map<String, Object> props = new HashMap<>();
+//        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+//        props.put(ConsumerConfig.GROUP_ID_CONFIG, "media-service-channel");
+//        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+//        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
+//        props.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl);
+//        props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, "true");
+//        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+//        return new DefaultKafkaConsumerFactory<>(props);
+//    }
+//
+//    @Bean
+//    public ConcurrentKafkaListenerContainerFactory<String, Channel> channelKafkaListenerContainerFactory() {
+//        ConcurrentKafkaListenerContainerFactory<String, Channel> factory = new ConcurrentKafkaListenerContainerFactory<>();
+//        factory.setConsumerFactory(channelConsumerFactory());
+//        return factory;
+//    }
+//
+//    // Consumer Factory for UserChannel
+//    @Bean
+//    public ConsumerFactory<String, UserChannel> userChannelConsumerFactory() {
+//        Map<String, Object> props = new HashMap<>();
+//        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+//        props.put(ConsumerConfig.GROUP_ID_CONFIG, "media-service-user-channel");
+//        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+//        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
+//        props.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl);
+//        props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, "true");
+//        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+//        return new DefaultKafkaConsumerFactory<>(props);
+//    }
 
-    @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, Group> groupKafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, Group> factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(groupConsumerFactory());
-        return factory;
-    }
-
-    // Consumer Factory for UserGroup
-    @Bean
-    public ConsumerFactory<String, UserGroup> userGroupConsumerFactory() {
-        Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, "media-service-user-group");
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
-        props.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl);
-        props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, true);
-        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-        return new DefaultKafkaConsumerFactory<>(props);
-    }
-
-    @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, UserGroup> userGroupKafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, UserGroup> factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(userGroupConsumerFactory());
-        return factory;
-    }
-
-    // Consumer Factory for Channel
-    @Bean
-    public ConsumerFactory<String, Channel> channelConsumerFactory() {
-        Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, "media-service-channel");
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
-        props.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl);
-        props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, true);
-        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-        return new DefaultKafkaConsumerFactory<>(props);
-    }
-
-    @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, Channel> channelKafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, Channel> factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(channelConsumerFactory());
-        return factory;
-    }
-
-    // Consumer Factory for UserChannel
-    @Bean
-    public ConsumerFactory<String, UserChannel> userChannelConsumerFactory() {
-        Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, "media-service-user-channel");
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
-        props.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl);
-        props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, true);
-        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-        return new DefaultKafkaConsumerFactory<>(props);
-    }
-
-    @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, UserChannel> userChannelKafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, UserChannel> factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(userChannelConsumerFactory());
-        return factory;
-    }
+//    @Bean
+//    public ConcurrentKafkaListenerContainerFactory<String, UserChannel> userChannelKafkaListenerContainerFactory() {
+//        ConcurrentKafkaListenerContainerFactory<String, UserChannel> factory = new ConcurrentKafkaListenerContainerFactory<>();
+//        factory.setConsumerFactory(userChannelConsumerFactory());
+//        return factory;
+//    }
 
 //    @Bean
 //    public ConcurrentMessageListenerContainer<String, User> repliesContainer(

@@ -1,5 +1,6 @@
 package com.example.mediaservice.service;
 
+import com.example.mediaservice.dto.GroupDto;
 import com.example.mediaservice.entity.Group;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,7 +43,14 @@ public class GroupRedisService {
         String key = getUserGroupsKey(userEmail);
         String field = String.valueOf(group.getId());
         try {
-            String value = objectMapper.writeValueAsString(group);
+            GroupDto groupDto = new GroupDto(
+                    String.valueOf(group.getId()), // Hoặc group.getId().toString() tùy kiểu dữ liệu
+                    String.valueOf(group.getName()),
+                    group.getHidden(),
+                    String.valueOf(group.getOwner())
+            );
+            // Serialize DTO thay vì Avro Object
+            String value = objectMapper.writeValueAsString(groupDto);
             HashOperations<String, String, String> hashOps = redisTemplate.opsForHash();
             hashOps.put(key, field, value);
             log.info("Added/updated group with ID {} for user '{}'", field, userEmail);
