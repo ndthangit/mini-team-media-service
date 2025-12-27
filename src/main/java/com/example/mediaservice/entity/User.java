@@ -13,10 +13,10 @@ import org.apache.avro.message.SchemaStore;
 
 @org.apache.avro.specific.AvroGenerated
 public class User extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = 4653436553185058128L;
+  private static final long serialVersionUID = 1603778421123938887L;
 
 
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"User\",\"namespace\":\"com.example.mediaservice.entity\",\"fields\":[{\"name\":\"email\",\"type\":\"string\",\"doc\":\"Email as primary key\"},{\"name\":\"dateOfBirth\",\"type\":\"string\"},{\"name\":\"gender\",\"type\":\"string\"},{\"name\":\"occupation\",\"type\":\"string\",\"default\":\"\"},{\"name\":\"firstName\",\"type\":\"string\"},{\"name\":\"lastName\",\"type\":\"string\"},{\"name\":\"version\",\"type\":[\"null\",\"int\"],\"doc\":\"Version for optimistic locking\",\"default\":null}]}");
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"User\",\"namespace\":\"com.example.mediaservice.entity\",\"fields\":[{\"name\":\"email\",\"type\":\"string\",\"doc\":\"Email as primary key\"},{\"name\":\"dateOfBirth\",\"type\":[\"null\",\"string\"],\"default\":null},{\"name\":\"gender\",\"type\":\"string\"},{\"name\":\"avatarUrl\",\"type\":[\"null\",\"string\"],\"default\":null},{\"name\":\"occupation\",\"type\":\"string\",\"default\":\"\"},{\"name\":\"firstName\",\"type\":\"string\"},{\"name\":\"lastName\",\"type\":\"string\"},{\"name\":\"version\",\"type\":[\"null\",\"int\"],\"doc\":\"Version for optimistic locking\",\"default\":null}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static final SpecificData MODEL$ = new SpecificData();
@@ -76,6 +76,7 @@ public class User extends org.apache.avro.specific.SpecificRecordBase implements
   private java.lang.CharSequence email;
   private java.lang.CharSequence dateOfBirth;
   private java.lang.CharSequence gender;
+  private java.lang.CharSequence avatarUrl;
   private java.lang.CharSequence occupation;
   private java.lang.CharSequence firstName;
   private java.lang.CharSequence lastName;
@@ -94,15 +95,17 @@ public class User extends org.apache.avro.specific.SpecificRecordBase implements
    * @param email Email as primary key
    * @param dateOfBirth The new value for dateOfBirth
    * @param gender The new value for gender
+   * @param avatarUrl The new value for avatarUrl
    * @param occupation The new value for occupation
    * @param firstName The new value for firstName
    * @param lastName The new value for lastName
    * @param version Version for optimistic locking
    */
-  public User(java.lang.CharSequence email, java.lang.CharSequence dateOfBirth, java.lang.CharSequence gender, java.lang.CharSequence occupation, java.lang.CharSequence firstName, java.lang.CharSequence lastName, java.lang.Integer version) {
+  public User(java.lang.CharSequence email, java.lang.CharSequence dateOfBirth, java.lang.CharSequence gender, java.lang.CharSequence avatarUrl, java.lang.CharSequence occupation, java.lang.CharSequence firstName, java.lang.CharSequence lastName, java.lang.Integer version) {
     this.email = email;
     this.dateOfBirth = dateOfBirth;
     this.gender = gender;
+    this.avatarUrl = avatarUrl;
     this.occupation = occupation;
     this.firstName = firstName;
     this.lastName = lastName;
@@ -122,10 +125,11 @@ public class User extends org.apache.avro.specific.SpecificRecordBase implements
     case 0: return email;
     case 1: return dateOfBirth;
     case 2: return gender;
-    case 3: return occupation;
-    case 4: return firstName;
-    case 5: return lastName;
-    case 6: return version;
+    case 3: return avatarUrl;
+    case 4: return occupation;
+    case 5: return firstName;
+    case 6: return lastName;
+    case 7: return version;
     default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
@@ -138,10 +142,11 @@ public class User extends org.apache.avro.specific.SpecificRecordBase implements
     case 0: email = (java.lang.CharSequence)value$; break;
     case 1: dateOfBirth = (java.lang.CharSequence)value$; break;
     case 2: gender = (java.lang.CharSequence)value$; break;
-    case 3: occupation = (java.lang.CharSequence)value$; break;
-    case 4: firstName = (java.lang.CharSequence)value$; break;
-    case 5: lastName = (java.lang.CharSequence)value$; break;
-    case 6: version = (java.lang.Integer)value$; break;
+    case 3: avatarUrl = (java.lang.CharSequence)value$; break;
+    case 4: occupation = (java.lang.CharSequence)value$; break;
+    case 5: firstName = (java.lang.CharSequence)value$; break;
+    case 6: lastName = (java.lang.CharSequence)value$; break;
+    case 7: version = (java.lang.Integer)value$; break;
     default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
@@ -196,6 +201,23 @@ public class User extends org.apache.avro.specific.SpecificRecordBase implements
    */
   public void setGender(java.lang.CharSequence value) {
     this.gender = value;
+  }
+
+  /**
+   * Gets the value of the 'avatarUrl' field.
+   * @return The value of the 'avatarUrl' field.
+   */
+  public java.lang.CharSequence getAvatarUrl() {
+    return avatarUrl;
+  }
+
+
+  /**
+   * Sets the value of the 'avatarUrl' field.
+   * @param value the value to set.
+   */
+  public void setAvatarUrl(java.lang.CharSequence value) {
+    this.avatarUrl = value;
   }
 
   /**
@@ -312,6 +334,7 @@ public class User extends org.apache.avro.specific.SpecificRecordBase implements
     private java.lang.CharSequence email;
     private java.lang.CharSequence dateOfBirth;
     private java.lang.CharSequence gender;
+    private java.lang.CharSequence avatarUrl;
     private java.lang.CharSequence occupation;
     private java.lang.CharSequence firstName;
     private java.lang.CharSequence lastName;
@@ -341,21 +364,25 @@ public class User extends org.apache.avro.specific.SpecificRecordBase implements
         this.gender = data().deepCopy(fields()[2].schema(), other.gender);
         fieldSetFlags()[2] = other.fieldSetFlags()[2];
       }
-      if (isValidValue(fields()[3], other.occupation)) {
-        this.occupation = data().deepCopy(fields()[3].schema(), other.occupation);
+      if (isValidValue(fields()[3], other.avatarUrl)) {
+        this.avatarUrl = data().deepCopy(fields()[3].schema(), other.avatarUrl);
         fieldSetFlags()[3] = other.fieldSetFlags()[3];
       }
-      if (isValidValue(fields()[4], other.firstName)) {
-        this.firstName = data().deepCopy(fields()[4].schema(), other.firstName);
+      if (isValidValue(fields()[4], other.occupation)) {
+        this.occupation = data().deepCopy(fields()[4].schema(), other.occupation);
         fieldSetFlags()[4] = other.fieldSetFlags()[4];
       }
-      if (isValidValue(fields()[5], other.lastName)) {
-        this.lastName = data().deepCopy(fields()[5].schema(), other.lastName);
+      if (isValidValue(fields()[5], other.firstName)) {
+        this.firstName = data().deepCopy(fields()[5].schema(), other.firstName);
         fieldSetFlags()[5] = other.fieldSetFlags()[5];
       }
-      if (isValidValue(fields()[6], other.version)) {
-        this.version = data().deepCopy(fields()[6].schema(), other.version);
+      if (isValidValue(fields()[6], other.lastName)) {
+        this.lastName = data().deepCopy(fields()[6].schema(), other.lastName);
         fieldSetFlags()[6] = other.fieldSetFlags()[6];
+      }
+      if (isValidValue(fields()[7], other.version)) {
+        this.version = data().deepCopy(fields()[7].schema(), other.version);
+        fieldSetFlags()[7] = other.fieldSetFlags()[7];
       }
     }
 
@@ -377,21 +404,25 @@ public class User extends org.apache.avro.specific.SpecificRecordBase implements
         this.gender = data().deepCopy(fields()[2].schema(), other.gender);
         fieldSetFlags()[2] = true;
       }
-      if (isValidValue(fields()[3], other.occupation)) {
-        this.occupation = data().deepCopy(fields()[3].schema(), other.occupation);
+      if (isValidValue(fields()[3], other.avatarUrl)) {
+        this.avatarUrl = data().deepCopy(fields()[3].schema(), other.avatarUrl);
         fieldSetFlags()[3] = true;
       }
-      if (isValidValue(fields()[4], other.firstName)) {
-        this.firstName = data().deepCopy(fields()[4].schema(), other.firstName);
+      if (isValidValue(fields()[4], other.occupation)) {
+        this.occupation = data().deepCopy(fields()[4].schema(), other.occupation);
         fieldSetFlags()[4] = true;
       }
-      if (isValidValue(fields()[5], other.lastName)) {
-        this.lastName = data().deepCopy(fields()[5].schema(), other.lastName);
+      if (isValidValue(fields()[5], other.firstName)) {
+        this.firstName = data().deepCopy(fields()[5].schema(), other.firstName);
         fieldSetFlags()[5] = true;
       }
-      if (isValidValue(fields()[6], other.version)) {
-        this.version = data().deepCopy(fields()[6].schema(), other.version);
+      if (isValidValue(fields()[6], other.lastName)) {
+        this.lastName = data().deepCopy(fields()[6].schema(), other.lastName);
         fieldSetFlags()[6] = true;
+      }
+      if (isValidValue(fields()[7], other.version)) {
+        this.version = data().deepCopy(fields()[7].schema(), other.version);
+        fieldSetFlags()[7] = true;
       }
     }
 
@@ -520,6 +551,46 @@ public class User extends org.apache.avro.specific.SpecificRecordBase implements
     }
 
     /**
+      * Gets the value of the 'avatarUrl' field.
+      * @return The value.
+      */
+    public java.lang.CharSequence getAvatarUrl() {
+      return avatarUrl;
+    }
+
+
+    /**
+      * Sets the value of the 'avatarUrl' field.
+      * @param value The value of 'avatarUrl'.
+      * @return This builder.
+      */
+    public com.example.mediaservice.entity.User.Builder setAvatarUrl(java.lang.CharSequence value) {
+      validate(fields()[3], value);
+      this.avatarUrl = value;
+      fieldSetFlags()[3] = true;
+      return this;
+    }
+
+    /**
+      * Checks whether the 'avatarUrl' field has been set.
+      * @return True if the 'avatarUrl' field has been set, false otherwise.
+      */
+    public boolean hasAvatarUrl() {
+      return fieldSetFlags()[3];
+    }
+
+
+    /**
+      * Clears the value of the 'avatarUrl' field.
+      * @return This builder.
+      */
+    public com.example.mediaservice.entity.User.Builder clearAvatarUrl() {
+      avatarUrl = null;
+      fieldSetFlags()[3] = false;
+      return this;
+    }
+
+    /**
       * Gets the value of the 'occupation' field.
       * @return The value.
       */
@@ -534,9 +605,9 @@ public class User extends org.apache.avro.specific.SpecificRecordBase implements
       * @return This builder.
       */
     public com.example.mediaservice.entity.User.Builder setOccupation(java.lang.CharSequence value) {
-      validate(fields()[3], value);
+      validate(fields()[4], value);
       this.occupation = value;
-      fieldSetFlags()[3] = true;
+      fieldSetFlags()[4] = true;
       return this;
     }
 
@@ -545,7 +616,7 @@ public class User extends org.apache.avro.specific.SpecificRecordBase implements
       * @return True if the 'occupation' field has been set, false otherwise.
       */
     public boolean hasOccupation() {
-      return fieldSetFlags()[3];
+      return fieldSetFlags()[4];
     }
 
 
@@ -555,7 +626,7 @@ public class User extends org.apache.avro.specific.SpecificRecordBase implements
       */
     public com.example.mediaservice.entity.User.Builder clearOccupation() {
       occupation = null;
-      fieldSetFlags()[3] = false;
+      fieldSetFlags()[4] = false;
       return this;
     }
 
@@ -574,9 +645,9 @@ public class User extends org.apache.avro.specific.SpecificRecordBase implements
       * @return This builder.
       */
     public com.example.mediaservice.entity.User.Builder setFirstName(java.lang.CharSequence value) {
-      validate(fields()[4], value);
+      validate(fields()[5], value);
       this.firstName = value;
-      fieldSetFlags()[4] = true;
+      fieldSetFlags()[5] = true;
       return this;
     }
 
@@ -585,7 +656,7 @@ public class User extends org.apache.avro.specific.SpecificRecordBase implements
       * @return True if the 'firstName' field has been set, false otherwise.
       */
     public boolean hasFirstName() {
-      return fieldSetFlags()[4];
+      return fieldSetFlags()[5];
     }
 
 
@@ -595,7 +666,7 @@ public class User extends org.apache.avro.specific.SpecificRecordBase implements
       */
     public com.example.mediaservice.entity.User.Builder clearFirstName() {
       firstName = null;
-      fieldSetFlags()[4] = false;
+      fieldSetFlags()[5] = false;
       return this;
     }
 
@@ -614,9 +685,9 @@ public class User extends org.apache.avro.specific.SpecificRecordBase implements
       * @return This builder.
       */
     public com.example.mediaservice.entity.User.Builder setLastName(java.lang.CharSequence value) {
-      validate(fields()[5], value);
+      validate(fields()[6], value);
       this.lastName = value;
-      fieldSetFlags()[5] = true;
+      fieldSetFlags()[6] = true;
       return this;
     }
 
@@ -625,7 +696,7 @@ public class User extends org.apache.avro.specific.SpecificRecordBase implements
       * @return True if the 'lastName' field has been set, false otherwise.
       */
     public boolean hasLastName() {
-      return fieldSetFlags()[5];
+      return fieldSetFlags()[6];
     }
 
 
@@ -635,7 +706,7 @@ public class User extends org.apache.avro.specific.SpecificRecordBase implements
       */
     public com.example.mediaservice.entity.User.Builder clearLastName() {
       lastName = null;
-      fieldSetFlags()[5] = false;
+      fieldSetFlags()[6] = false;
       return this;
     }
 
@@ -656,9 +727,9 @@ public class User extends org.apache.avro.specific.SpecificRecordBase implements
       * @return This builder.
       */
     public com.example.mediaservice.entity.User.Builder setVersion(java.lang.Integer value) {
-      validate(fields()[6], value);
+      validate(fields()[7], value);
       this.version = value;
-      fieldSetFlags()[6] = true;
+      fieldSetFlags()[7] = true;
       return this;
     }
 
@@ -668,7 +739,7 @@ public class User extends org.apache.avro.specific.SpecificRecordBase implements
       * @return True if the 'version' field has been set, false otherwise.
       */
     public boolean hasVersion() {
-      return fieldSetFlags()[6];
+      return fieldSetFlags()[7];
     }
 
 
@@ -679,7 +750,7 @@ public class User extends org.apache.avro.specific.SpecificRecordBase implements
       */
     public com.example.mediaservice.entity.User.Builder clearVersion() {
       version = null;
-      fieldSetFlags()[6] = false;
+      fieldSetFlags()[7] = false;
       return this;
     }
 
@@ -691,10 +762,11 @@ public class User extends org.apache.avro.specific.SpecificRecordBase implements
         record.email = fieldSetFlags()[0] ? this.email : (java.lang.CharSequence) defaultValue(fields()[0]);
         record.dateOfBirth = fieldSetFlags()[1] ? this.dateOfBirth : (java.lang.CharSequence) defaultValue(fields()[1]);
         record.gender = fieldSetFlags()[2] ? this.gender : (java.lang.CharSequence) defaultValue(fields()[2]);
-        record.occupation = fieldSetFlags()[3] ? this.occupation : (java.lang.CharSequence) defaultValue(fields()[3]);
-        record.firstName = fieldSetFlags()[4] ? this.firstName : (java.lang.CharSequence) defaultValue(fields()[4]);
-        record.lastName = fieldSetFlags()[5] ? this.lastName : (java.lang.CharSequence) defaultValue(fields()[5]);
-        record.version = fieldSetFlags()[6] ? this.version : (java.lang.Integer) defaultValue(fields()[6]);
+        record.avatarUrl = fieldSetFlags()[3] ? this.avatarUrl : (java.lang.CharSequence) defaultValue(fields()[3]);
+        record.occupation = fieldSetFlags()[4] ? this.occupation : (java.lang.CharSequence) defaultValue(fields()[4]);
+        record.firstName = fieldSetFlags()[5] ? this.firstName : (java.lang.CharSequence) defaultValue(fields()[5]);
+        record.lastName = fieldSetFlags()[6] ? this.lastName : (java.lang.CharSequence) defaultValue(fields()[6]);
+        record.version = fieldSetFlags()[7] ? this.version : (java.lang.Integer) defaultValue(fields()[7]);
         return record;
       } catch (org.apache.avro.AvroMissingFieldException e) {
         throw e;
@@ -729,9 +801,23 @@ public class User extends org.apache.avro.specific.SpecificRecordBase implements
   {
     out.writeString(this.email);
 
-    out.writeString(this.dateOfBirth);
+    if (this.dateOfBirth == null) {
+      out.writeIndex(0);
+      out.writeNull();
+    } else {
+      out.writeIndex(1);
+      out.writeString(this.dateOfBirth);
+    }
 
     out.writeString(this.gender);
+
+    if (this.avatarUrl == null) {
+      out.writeIndex(0);
+      out.writeNull();
+    } else {
+      out.writeIndex(1);
+      out.writeString(this.avatarUrl);
+    }
 
     out.writeString(this.occupation);
 
@@ -756,9 +842,21 @@ public class User extends org.apache.avro.specific.SpecificRecordBase implements
     if (fieldOrder == null) {
       this.email = in.readString(this.email instanceof Utf8 ? (Utf8)this.email : null);
 
-      this.dateOfBirth = in.readString(this.dateOfBirth instanceof Utf8 ? (Utf8)this.dateOfBirth : null);
+      if (in.readIndex() != 1) {
+        in.readNull();
+        this.dateOfBirth = null;
+      } else {
+        this.dateOfBirth = in.readString(this.dateOfBirth instanceof Utf8 ? (Utf8)this.dateOfBirth : null);
+      }
 
       this.gender = in.readString(this.gender instanceof Utf8 ? (Utf8)this.gender : null);
+
+      if (in.readIndex() != 1) {
+        in.readNull();
+        this.avatarUrl = null;
+      } else {
+        this.avatarUrl = in.readString(this.avatarUrl instanceof Utf8 ? (Utf8)this.avatarUrl : null);
+      }
 
       this.occupation = in.readString(this.occupation instanceof Utf8 ? (Utf8)this.occupation : null);
 
@@ -774,14 +872,19 @@ public class User extends org.apache.avro.specific.SpecificRecordBase implements
       }
 
     } else {
-      for (int i = 0; i < 7; i++) {
+      for (int i = 0; i < 8; i++) {
         switch (fieldOrder[i].pos()) {
         case 0:
           this.email = in.readString(this.email instanceof Utf8 ? (Utf8)this.email : null);
           break;
 
         case 1:
-          this.dateOfBirth = in.readString(this.dateOfBirth instanceof Utf8 ? (Utf8)this.dateOfBirth : null);
+          if (in.readIndex() != 1) {
+            in.readNull();
+            this.dateOfBirth = null;
+          } else {
+            this.dateOfBirth = in.readString(this.dateOfBirth instanceof Utf8 ? (Utf8)this.dateOfBirth : null);
+          }
           break;
 
         case 2:
@@ -789,18 +892,27 @@ public class User extends org.apache.avro.specific.SpecificRecordBase implements
           break;
 
         case 3:
-          this.occupation = in.readString(this.occupation instanceof Utf8 ? (Utf8)this.occupation : null);
+          if (in.readIndex() != 1) {
+            in.readNull();
+            this.avatarUrl = null;
+          } else {
+            this.avatarUrl = in.readString(this.avatarUrl instanceof Utf8 ? (Utf8)this.avatarUrl : null);
+          }
           break;
 
         case 4:
-          this.firstName = in.readString(this.firstName instanceof Utf8 ? (Utf8)this.firstName : null);
+          this.occupation = in.readString(this.occupation instanceof Utf8 ? (Utf8)this.occupation : null);
           break;
 
         case 5:
-          this.lastName = in.readString(this.lastName instanceof Utf8 ? (Utf8)this.lastName : null);
+          this.firstName = in.readString(this.firstName instanceof Utf8 ? (Utf8)this.firstName : null);
           break;
 
         case 6:
+          this.lastName = in.readString(this.lastName instanceof Utf8 ? (Utf8)this.lastName : null);
+          break;
+
+        case 7:
           if (in.readIndex() != 1) {
             in.readNull();
             this.version = null;
@@ -822,6 +934,7 @@ public class User extends org.apache.avro.specific.SpecificRecordBase implements
     result = 31 * result + (email == null ? 0 : email.hashCode());
     result = 31 * result + (dateOfBirth == null ? 0 : dateOfBirth.hashCode());
     result = 31 * result + (gender == null ? 0 : gender.hashCode());
+    result = 31 * result + (avatarUrl == null ? 0 : avatarUrl.hashCode());
     result = 31 * result + (occupation == null ? 0 : occupation.hashCode());
     result = 31 * result + (firstName == null ? 0 : firstName.hashCode());
     result = 31 * result + (lastName == null ? 0 : lastName.hashCode());
@@ -845,6 +958,9 @@ public class User extends org.apache.avro.specific.SpecificRecordBase implements
       return false;
     }
     if (Utf8.compareSequences(this.gender, other.gender) != 0) {
+      return false;
+    }
+    if (Utf8.compareSequences(this.avatarUrl, other.avatarUrl) != 0) {
       return false;
     }
     if (Utf8.compareSequences(this.occupation, other.occupation) != 0) {

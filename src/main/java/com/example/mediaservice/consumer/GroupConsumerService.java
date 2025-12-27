@@ -16,7 +16,7 @@ public class GroupConsumerService {
     private static final Logger logger = LoggerFactory.getLogger(GroupConsumerService.class);
     private final GroupRedisService groupRedisService;
 
-    @KafkaListener(topics = "group-created")
+    @KafkaListener(topics = "group-created",containerFactory = "kafkaListenerContainerFactory")
     public void consumeGroupCreated(ConsumerRecord<String, Group> record) {
         String key = record.key();
         Group group = record.value();
@@ -34,7 +34,7 @@ public class GroupConsumerService {
         }
     }
 
-    @KafkaListener(topics = "group-updated")
+    @KafkaListener(topics = "group-updated",containerFactory = "kafkaListenerContainerFactory")
     public void consumeGroupUpdated(ConsumerRecord<String, Group> record) {
         String key = record.key();
         Group group = record.value();

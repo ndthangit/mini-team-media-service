@@ -10,11 +10,17 @@
     },
     {
       "name": "dateOfBirth",
-      "type": "string"
+      "type": ["null", "string"],
+      "default": null
     },
     {
       "name": "gender",
       "type": "string"
+    },
+    {
+      "name": "avatarUrl",
+      "type": ["null", "string"],
+      "default": null
     },
     {
       "name": "occupation",

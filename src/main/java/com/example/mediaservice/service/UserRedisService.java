@@ -26,12 +26,13 @@ public class UserRedisService {
             
             Map<String, Object> userMap = new HashMap<>();
             userMap.put("email", String.valueOf(user.getEmail()));
-
             userMap.put("dateOfBirth", user.getDateOfBirth() != null ? String.valueOf(user.getDateOfBirth()) : null);
             userMap.put("gender", user.getGender() != null ? String.valueOf(user.getGender()) : null);
+            userMap.put("avatarUrl", user.getAvatarUrl() != null ? String.valueOf(user.getAvatarUrl()) : null);
+            userMap.put("occupation", user.getOccupation() != null ? String.valueOf(user.getOccupation()) : null);
             userMap.put("firstName", user.getFirstName() != null ? String.valueOf(user.getFirstName()) : null);
             userMap.put("lastName", user.getLastName() != null ? String.valueOf(user.getLastName()) : null);
-            userMap.put("occupation", user.getOccupation() != null ? String.valueOf(user.getOccupation()) : null);
+            userMap.put("version", user.getVersion() != null ? user.getVersion() : null);
 
             hashOps.putAll(USER_HASH_KEY + ":" + userKey, userMap);
             log.info("Saved user to Redis with key: {}", userKey);

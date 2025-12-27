@@ -1,0 +1,41 @@
+{
+  "type": "record",
+  "name": "Post",
+  "namespace": "com.example.mediaservice.entity",
+  "fields": [
+    {
+      "name": "id",
+      "type": "string",
+      "doc": "Post ID as primary key"
+    },
+    {
+      "name": "groupId",
+      "type": "string",
+      "doc": "Group ID that this post belongs to"
+    },
+    {
+      "name": "channelId",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Optional channel ID if posted in a channel"
+    },
+    {
+      "name": "author",
+      "type": ["null", "com.example.mediaservice.entity.User"],
+      "default": null,
+      "doc": "Email of the post author"
+    },
+    {
+      "name": "content",
+      "type": "string",
+      "doc": "Post content"
+    },
+    {
+      "name": "likes",
+      "type": "int",
+      "default": 0,
+      "doc": "Number of likes"
+    }
+  ]
+}
+

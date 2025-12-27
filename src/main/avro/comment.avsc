@@ -1,0 +1,28 @@
+{
+  "type": "record",
+  "name": "Comment",
+  "namespace": "com.example.mediaservice.entity",
+  "fields": [
+    {
+      "name": "id",
+      "type": "string",
+      "doc": "Comment ID as primary key"
+    },
+    {
+      "name": "postId",
+      "type": "string",
+      "doc": "Post ID that this comment belongs to"
+    },
+    {
+      "name": "author",
+      "type": ["null", "com.example.mediaservice.entity.User"],
+      "doc": "Email of the comment author"
+    },
+    {
+      "name": "content",
+      "type": "string",
+      "doc": "Comment content"
+    }
+  ]
+}
+

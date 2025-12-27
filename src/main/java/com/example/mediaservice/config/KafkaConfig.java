@@ -1,33 +1,20 @@
 package com.example.mediaservice.config;
 
 import com.example.mediaservice.entity.Channel;
+import com.example.mediaservice.entity.Comment;
 import com.example.mediaservice.entity.Group;
+import com.example.mediaservice.entity.Post;
 import com.example.mediaservice.entity.User;
 import com.example.mediaservice.entity.relationship.UserChannel;
 import com.example.mediaservice.entity.relationship.UserGroup;
-import io.confluent.kafka.serializers.KafkaAvroDeserializer;
-import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
-import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.common.serialization.StringDeserializer;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.*;
-
-import java.util.HashMap;
-import java.util.Map;
 
 
 @Configuration
 public class KafkaConfig {
-
-//    @Value("${spring.kafka.bootstrap-servers}")
-//    private String bootstrapServers;
-//
-//    @Value("${spring.kafka.properties.schema.registry.url}")
-//    private String schemaRegistryUrl;
 
     @Bean
     public KafkaTemplate<String, User> userTemplate(ProducerFactory<String, User> producerFactory) {
@@ -56,6 +43,16 @@ public class KafkaConfig {
 
     @Bean
     public KafkaTemplate<String, String> kafkaTemplate(ProducerFactory<String, String> producerFactory) {
+        return new KafkaTemplate<>(producerFactory);
+    }
+
+    @Bean
+    public KafkaTemplate<String, Post> postTemplate(ProducerFactory<String, Post> producerFactory) {
+        return new KafkaTemplate<>(producerFactory);
+    }
+
+    @Bean
+    public KafkaTemplate<String, Comment> commentTemplate(ProducerFactory<String, Comment> producerFactory) {
         return new KafkaTemplate<>(producerFactory);
     }
 
@@ -194,6 +191,34 @@ public class KafkaConfig {
                         .replicas(1)
                         .build(),
                 TopicBuilder.name("user-channel-events")
+                        .partitions(3)
+                        .replicas(1)
+                        .build(),
+                TopicBuilder.name("post-created")
+                        .partitions(3)
+                        .replicas(1)
+                        .build(),
+                TopicBuilder.name("post-updated")
+                        .partitions(3)
+                        .replicas(1)
+                        .build(),
+                TopicBuilder.name("post-deleted")
+                        .partitions(3)
+                        .replicas(1)
+                        .build(),
+                TopicBuilder.name("post-liked")
+                        .partitions(3)
+                        .replicas(1)
+                        .build(),
+                TopicBuilder.name("comment-created")
+                        .partitions(3)
+                        .replicas(1)
+                        .build(),
+                TopicBuilder.name("comment-updated")
+                        .partitions(3)
+                        .replicas(1)
+                        .build(),
+                TopicBuilder.name("comment-deleted")
                         .partitions(3)
                         .replicas(1)
                         .build()
