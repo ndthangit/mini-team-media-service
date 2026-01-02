@@ -2,6 +2,7 @@ package com.example.mediaservice.controller;
 
 import com.example.mediaservice.dto.CommentDto;
 import com.example.mediaservice.entity.Comment;
+import com.example.mediaservice.entity.CommentEventType;
 import com.example.mediaservice.producer.CommentProducerService;
 import com.example.mediaservice.service.CommentRedisService;
 import com.example.mediaservice.service.TokenService;
@@ -23,19 +24,28 @@ public class CommentEventController {
     private final TokenService tokenService;
 
     /**
-     * Create a new comment
+     * Tạo comment mới cho bài post
      */
-    @PostMapping("/create")
-    public ResponseEntity<String> createComment(@RequestBody CommentDto commentDto) {
+    @PostMapping("/create/comment")
+    public ResponseEntity<String> createCommentForPost(@RequestBody CommentDto commentDto) {
         try {
-            String commentId = UUID.randomUUID().toString();
+            if (commentDto.postId() == null) {
+                return ResponseEntity.badRequest()
+                        .body("postId is required for post comment");
+            }
 
-            // Build Comment entity
+            String commentId = UUID.randomUUID().toString();
+            long timestamp = System.currentTimeMillis();
+
+            // Build Comment entity cho bài post
             Comment comment = Comment.newBuilder()
                     .setId(commentId)
+                    .setEventType(CommentEventType.CREATED)
                     .setPostId(commentDto.postId())
+                    .setParentId(null)
                     .setAuthor(commentDto.author())
                     .setContent(commentDto.content())
+                    .setCreatedAt(timestamp)
                     .build();
 
             // Send event to Kafka
@@ -50,17 +60,56 @@ public class CommentEventController {
     }
 
     /**
-     * Update an existing comment
+     * Tạo reply cho một comment khác
+     */
+    @PostMapping("/create/reply")
+    public ResponseEntity<String> createReplyForComment(@RequestBody CommentDto commentDto) {
+        try {
+            if (commentDto.parentId() == null) {
+                return ResponseEntity.badRequest()
+                        .body("parentId is required for reply comment");
+            }
+
+            String commentId = UUID.randomUUID().toString();
+            long timestamp = System.currentTimeMillis();
+
+            // Build Comment entity cho reply
+            Comment comment = Comment.newBuilder()
+                    .setId(commentId)
+                    .setPostId(null) // postId null cho biết đây là reply
+                    .setParentId(commentDto.parentId())
+                    .setAuthor(commentDto.author())
+                    .setContent(commentDto.content())
+                    .setCreatedAt(timestamp)
+                    .build();
+
+            // Send event to Kafka
+            commentProducerService.sendCommentCreated(comment);
+
+            return ResponseEntity.accepted()
+                    .body("Reply creation request accepted. Reply ID: " + commentId);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to process reply creation request: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Cập nhật comment hoặc reply
      */
     @PutMapping("/update/{commentId}")
     public ResponseEntity<String> updateComment(@PathVariable String commentId, @RequestBody CommentDto commentDto) {
         try {
+            long timestamp = System.currentTimeMillis();
+
             // Build Comment entity
             Comment comment = Comment.newBuilder()
                     .setId(commentId)
-                    .setPostId(commentDto.postId())
+                    .setPostId(commentDto.postId()) // có thể null nếu là reply
+                    .setParentId(commentDto.parentId())
                     .setAuthor(commentDto.author())
                     .setContent(commentDto.content())
+                    .setCreatedAt(timestamp)
                     .build();
 
             // Send event to Kafka
@@ -75,19 +124,28 @@ public class CommentEventController {
     }
 
     /**
-     * Delete a comment
+     * Xóa comment hoặc reply
+     * Cần truyền postId hoặc parentId để xác định loại comment
      */
     @DeleteMapping("/delete/{commentId}")
     public ResponseEntity<String> deleteComment(
             @PathVariable String commentId,
-            @RequestParam String postId) {
+            @RequestParam(required = false) String postId,
+            @RequestParam(required = false) String parentId) {
         try {
+            if (postId == null && parentId == null) {
+                return ResponseEntity.badRequest()
+                        .body("Either postId or parentId must be provided");
+            }
+
             // Build minimal Comment entity for deletion
             Comment comment = Comment.newBuilder()
                     .setId(commentId)
                     .setPostId(postId)
+                    .setParentId(parentId)
                     .setAuthor(null)
                     .setContent("")
+                    .setCreatedAt(0L)
                     .build();
 
             // Send event to Kafka
@@ -102,7 +160,7 @@ public class CommentEventController {
     }
 
     /**
-     * Get all comments for a post
+     * Lấy tất cả comments của một bài post
      */
     @GetMapping("/post/{postId}")
     public ResponseEntity<?> getCommentsByPost(@PathVariable String postId) {
@@ -116,9 +174,23 @@ public class CommentEventController {
     }
 
     /**
-     * Get a specific comment by ID
+     * Lấy tất cả replies của một comment
      */
-    @GetMapping("/{postId}/{commentId}")
+    @GetMapping("/comment/{commentId}/replies")
+    public ResponseEntity<?> getRepliesByComment(@PathVariable String commentId) {
+        try {
+            List<CommentDto> replies = commentRedisService.getRepliesByComment(commentId);
+            return ResponseEntity.ok(replies);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to retrieve replies: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Lấy một comment cụ thể từ post
+     */
+    @GetMapping("/post/{postId}/{commentId}")
     public ResponseEntity<?> getCommentById(@PathVariable String postId, @PathVariable String commentId) {
         try {
             CommentDto comment = commentRedisService.getCommentById(postId, commentId);
@@ -129,6 +201,23 @@ public class CommentEventController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Failed to retrieve comment: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Lấy một reply cụ thể từ comment
+     */
+    @GetMapping("/comment/{commentId}/reply/{replyId}")
+    public ResponseEntity<?> getReplyById(@PathVariable String commentId, @PathVariable String replyId) {
+        try {
+            CommentDto reply = commentRedisService.getReplyById(commentId, replyId);
+            if (reply == null) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(reply);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to retrieve reply: " + e.getMessage());
         }
     }
 }

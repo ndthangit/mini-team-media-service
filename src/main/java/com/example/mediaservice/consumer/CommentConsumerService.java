@@ -18,7 +18,7 @@ public class CommentConsumerService {
     public void consumeCommentCreated(Comment comment) {
         try {
             log.info("Received comment-created event: {}", comment);
-            commentRedisService.addCommentToPost(String.valueOf(comment.getPostId()), comment);
+            commentRedisService.saveComment(comment);
             log.info("Successfully processed comment-created event for comment: {}", comment.getId());
         } catch (Exception e) {
             log.error("Error processing comment-created event: {}", e.getMessage(), e);
@@ -29,7 +29,7 @@ public class CommentConsumerService {
     public void consumeCommentUpdated(Comment comment) {
         try {
             log.info("Received comment-updated event: {}", comment);
-            commentRedisService.addCommentToPost(String.valueOf(comment.getPostId()), comment);
+            commentRedisService.saveComment(comment);
             log.info("Successfully processed comment-updated event for comment: {}", comment.getId());
         } catch (Exception e) {
             log.error("Error processing comment-updated event: {}", e.getMessage(), e);
@@ -40,7 +40,7 @@ public class CommentConsumerService {
     public void consumeCommentDeleted(Comment comment) {
         try {
             log.info("Received comment-deleted event: {}", comment);
-            commentRedisService.removeCommentFromPost(String.valueOf(comment.getPostId()), String.valueOf(comment.getId()));
+            commentRedisService.removeComment(comment);
             log.info("Successfully processed comment-deleted event for comment: {}", comment.getId());
         } catch (Exception e) {
             log.error("Error processing comment-deleted event: {}", e.getMessage(), e);

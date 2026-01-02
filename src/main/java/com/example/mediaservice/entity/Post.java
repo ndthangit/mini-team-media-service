@@ -13,10 +13,10 @@ import org.apache.avro.message.SchemaStore;
 
 @org.apache.avro.specific.AvroGenerated
 public class Post extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = -6713198825530385722L;
+  private static final long serialVersionUID = -5700145168213448566L;
 
 
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Post\",\"namespace\":\"com.example.mediaservice.entity\",\"fields\":[{\"name\":\"id\",\"type\":\"string\",\"doc\":\"Post ID as primary key\"},{\"name\":\"groupId\",\"type\":\"string\",\"doc\":\"Group ID that this post belongs to\"},{\"name\":\"channelId\",\"type\":[\"null\",\"string\"],\"doc\":\"Optional channel ID if posted in a channel\",\"default\":null},{\"name\":\"author\",\"type\":[\"null\",{\"type\":\"record\",\"name\":\"User\",\"fields\":[{\"name\":\"email\",\"type\":\"string\",\"doc\":\"Email as primary key\"},{\"name\":\"dateOfBirth\",\"type\":[\"null\",\"string\"],\"default\":null},{\"name\":\"gender\",\"type\":\"string\"},{\"name\":\"avatarUrl\",\"type\":[\"null\",\"string\"],\"default\":null},{\"name\":\"occupation\",\"type\":\"string\",\"default\":\"\"},{\"name\":\"firstName\",\"type\":\"string\"},{\"name\":\"lastName\",\"type\":\"string\"},{\"name\":\"version\",\"type\":[\"null\",\"int\"],\"doc\":\"Version for optimistic locking\",\"default\":null}]}],\"doc\":\"Email of the post author\",\"default\":null},{\"name\":\"content\",\"type\":\"string\",\"doc\":\"Post content\"},{\"name\":\"likes\",\"type\":\"int\",\"doc\":\"Number of likes\",\"default\":0}]}");
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Post\",\"namespace\":\"com.example.mediaservice.entity\",\"fields\":[{\"name\":\"id\",\"type\":\"string\",\"doc\":\"Post ID as primary key\"},{\"name\":\"groupId\",\"type\":\"string\",\"doc\":\"Group ID that this post belongs to\"},{\"name\":\"channelId\",\"type\":[\"null\",\"string\"],\"doc\":\"Optional channel ID if posted in a channel\",\"default\":null},{\"name\":\"author\",\"type\":[\"null\",{\"type\":\"record\",\"name\":\"User\",\"fields\":[{\"name\":\"email\",\"type\":\"string\",\"doc\":\"Email as primary key\"},{\"name\":\"dateOfBirth\",\"type\":[\"null\",\"string\"],\"default\":null},{\"name\":\"gender\",\"type\":\"string\"},{\"name\":\"avatarUrl\",\"type\":[\"null\",\"string\"],\"default\":null},{\"name\":\"occupation\",\"type\":\"string\",\"default\":\"\"},{\"name\":\"firstName\",\"type\":\"string\"},{\"name\":\"lastName\",\"type\":\"string\"},{\"name\":\"version\",\"type\":[\"null\",\"int\"],\"doc\":\"Version for optimistic locking\",\"default\":null}]}],\"doc\":\"Email of the post author\",\"default\":null},{\"name\":\"content\",\"type\":\"string\",\"doc\":\"Post content\"},{\"name\":\"likes\",\"type\":\"int\",\"doc\":\"Number of likes\",\"default\":0},{\"name\":\"createdAt\",\"type\":\"long\",\"doc\":\"Timestamp of post creation\",\"default\":0}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static final SpecificData MODEL$ = new SpecificData();
@@ -84,6 +84,8 @@ public class Post extends org.apache.avro.specific.SpecificRecordBase implements
   private java.lang.CharSequence content;
   /** Number of likes */
   private int likes;
+  /** Timestamp of post creation */
+  private long createdAt;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -100,14 +102,16 @@ public class Post extends org.apache.avro.specific.SpecificRecordBase implements
    * @param author Email of the post author
    * @param content Post content
    * @param likes Number of likes
+   * @param createdAt Timestamp of post creation
    */
-  public Post(java.lang.CharSequence id, java.lang.CharSequence groupId, java.lang.CharSequence channelId, com.example.mediaservice.entity.User author, java.lang.CharSequence content, java.lang.Integer likes) {
+  public Post(java.lang.CharSequence id, java.lang.CharSequence groupId, java.lang.CharSequence channelId, com.example.mediaservice.entity.User author, java.lang.CharSequence content, java.lang.Integer likes, java.lang.Long createdAt) {
     this.id = id;
     this.groupId = groupId;
     this.channelId = channelId;
     this.author = author;
     this.content = content;
     this.likes = likes;
+    this.createdAt = createdAt;
   }
 
   @Override
@@ -126,6 +130,7 @@ public class Post extends org.apache.avro.specific.SpecificRecordBase implements
     case 3: return author;
     case 4: return content;
     case 5: return likes;
+    case 6: return createdAt;
     default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
@@ -141,6 +146,7 @@ public class Post extends org.apache.avro.specific.SpecificRecordBase implements
     case 3: author = (com.example.mediaservice.entity.User)value$; break;
     case 4: content = (java.lang.CharSequence)value$; break;
     case 5: likes = (java.lang.Integer)value$; break;
+    case 6: createdAt = (java.lang.Long)value$; break;
     default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
@@ -254,6 +260,24 @@ public class Post extends org.apache.avro.specific.SpecificRecordBase implements
   }
 
   /**
+   * Gets the value of the 'createdAt' field.
+   * @return Timestamp of post creation
+   */
+  public long getCreatedAt() {
+    return createdAt;
+  }
+
+
+  /**
+   * Sets the value of the 'createdAt' field.
+   * Timestamp of post creation
+   * @param value the value to set.
+   */
+  public void setCreatedAt(long value) {
+    this.createdAt = value;
+  }
+
+  /**
    * Creates a new Post RecordBuilder.
    * @return A new Post RecordBuilder
    */
@@ -307,6 +331,8 @@ public class Post extends org.apache.avro.specific.SpecificRecordBase implements
     private java.lang.CharSequence content;
     /** Number of likes */
     private int likes;
+    /** Timestamp of post creation */
+    private long createdAt;
 
     /** Creates a new Builder */
     private Builder() {
@@ -346,6 +372,10 @@ public class Post extends org.apache.avro.specific.SpecificRecordBase implements
         this.likes = data().deepCopy(fields()[5].schema(), other.likes);
         fieldSetFlags()[5] = other.fieldSetFlags()[5];
       }
+      if (isValidValue(fields()[6], other.createdAt)) {
+        this.createdAt = data().deepCopy(fields()[6].schema(), other.createdAt);
+        fieldSetFlags()[6] = other.fieldSetFlags()[6];
+      }
     }
 
     /**
@@ -378,6 +408,10 @@ public class Post extends org.apache.avro.specific.SpecificRecordBase implements
       if (isValidValue(fields()[5], other.likes)) {
         this.likes = data().deepCopy(fields()[5].schema(), other.likes);
         fieldSetFlags()[5] = true;
+      }
+      if (isValidValue(fields()[6], other.createdAt)) {
+        this.createdAt = data().deepCopy(fields()[6].schema(), other.createdAt);
+        fieldSetFlags()[6] = true;
       }
     }
 
@@ -683,6 +717,49 @@ public class Post extends org.apache.avro.specific.SpecificRecordBase implements
       return this;
     }
 
+    /**
+      * Gets the value of the 'createdAt' field.
+      * Timestamp of post creation
+      * @return The value.
+      */
+    public long getCreatedAt() {
+      return createdAt;
+    }
+
+
+    /**
+      * Sets the value of the 'createdAt' field.
+      * Timestamp of post creation
+      * @param value The value of 'createdAt'.
+      * @return This builder.
+      */
+    public com.example.mediaservice.entity.Post.Builder setCreatedAt(long value) {
+      validate(fields()[6], value);
+      this.createdAt = value;
+      fieldSetFlags()[6] = true;
+      return this;
+    }
+
+    /**
+      * Checks whether the 'createdAt' field has been set.
+      * Timestamp of post creation
+      * @return True if the 'createdAt' field has been set, false otherwise.
+      */
+    public boolean hasCreatedAt() {
+      return fieldSetFlags()[6];
+    }
+
+
+    /**
+      * Clears the value of the 'createdAt' field.
+      * Timestamp of post creation
+      * @return This builder.
+      */
+    public com.example.mediaservice.entity.Post.Builder clearCreatedAt() {
+      fieldSetFlags()[6] = false;
+      return this;
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public Post build() {
@@ -703,6 +780,7 @@ public class Post extends org.apache.avro.specific.SpecificRecordBase implements
         }
         record.content = fieldSetFlags()[4] ? this.content : (java.lang.CharSequence) defaultValue(fields()[4]);
         record.likes = fieldSetFlags()[5] ? this.likes : (java.lang.Integer) defaultValue(fields()[5]);
+        record.createdAt = fieldSetFlags()[6] ? this.createdAt : (java.lang.Long) defaultValue(fields()[6]);
         return record;
       } catch (org.apache.avro.AvroMissingFieldException e) {
         throw e;
@@ -759,6 +837,8 @@ public class Post extends org.apache.avro.specific.SpecificRecordBase implements
 
     out.writeInt(this.likes);
 
+    out.writeLong(this.createdAt);
+
   }
 
   @Override public void customDecode(org.apache.avro.io.ResolvingDecoder in)
@@ -791,8 +871,10 @@ public class Post extends org.apache.avro.specific.SpecificRecordBase implements
 
       this.likes = in.readInt();
 
+      this.createdAt = in.readLong();
+
     } else {
-      for (int i = 0; i < 6; i++) {
+      for (int i = 0; i < 7; i++) {
         switch (fieldOrder[i].pos()) {
         case 0:
           this.id = in.readString(this.id instanceof Utf8 ? (Utf8)this.id : null);
@@ -831,6 +913,10 @@ public class Post extends org.apache.avro.specific.SpecificRecordBase implements
           this.likes = in.readInt();
           break;
 
+        case 6:
+          this.createdAt = in.readLong();
+          break;
+
         default:
           throw new java.io.IOException("Corrupt ResolvingDecoder.");
         }
@@ -847,6 +933,7 @@ public class Post extends org.apache.avro.specific.SpecificRecordBase implements
     result = 31 * result + (author == null ? 0 : author.hashCode());
     result = 31 * result + (content == null ? 0 : content.hashCode());
     result = 31 * result + Integer.hashCode(likes);
+    result = 31 * result + Long.hashCode(createdAt);
     return result;
   }
 
@@ -875,6 +962,9 @@ public class Post extends org.apache.avro.specific.SpecificRecordBase implements
       return false;
     }
     if (this.likes != other.likes) {
+      return false;
+    }
+    if (this.createdAt != other.createdAt) {
       return false;
     }
     return true;

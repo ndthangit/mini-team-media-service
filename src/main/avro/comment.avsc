@@ -9,9 +9,13 @@
       "doc": "Comment ID as primary key"
     },
     {
-      "name": "postId",
-      "type": "string",
-      "doc": "Post ID that this comment belongs to"
+      "name": "eventType",
+      "type": {
+        "type": "enum",
+        "name": "CommentEventType",
+        "symbols": ["CREATED", "UPDATED", "DELETED"]
+      },
+      "default": "CREATED"
     },
     {
       "name": "author",
@@ -19,9 +23,27 @@
       "doc": "Email of the comment author"
     },
     {
+      "name": "postId",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Nếu null thì đây là comment trả lời cho comment khác, nếu có giá trị thì đây là comment cho bài post"
+    },
+    {
+      "name": "parentId",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "ID của comment cha nếu đây là reply cho comment khác"
+    },
+    {
       "name": "content",
       "type": "string",
       "doc": "Comment content"
+    },
+    {
+      "name": "createdAt",
+      "type": "long",
+      "doc": "Timestamp of post creation",
+      "default": 0
     }
   ]
 }

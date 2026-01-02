@@ -13,10 +13,10 @@ import org.apache.avro.message.SchemaStore;
 
 @org.apache.avro.specific.AvroGenerated
 public class Comment extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = -33487431439969311L;
+  private static final long serialVersionUID = 4756469920516509511L;
 
 
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Comment\",\"namespace\":\"com.example.mediaservice.entity\",\"fields\":[{\"name\":\"id\",\"type\":\"string\",\"doc\":\"Comment ID as primary key\"},{\"name\":\"postId\",\"type\":\"string\",\"doc\":\"Post ID that this comment belongs to\"},{\"name\":\"author\",\"type\":[\"null\",{\"type\":\"record\",\"name\":\"User\",\"fields\":[{\"name\":\"email\",\"type\":\"string\",\"doc\":\"Email as primary key\"},{\"name\":\"dateOfBirth\",\"type\":[\"null\",\"string\"],\"default\":null},{\"name\":\"gender\",\"type\":\"string\"},{\"name\":\"avatarUrl\",\"type\":[\"null\",\"string\"],\"default\":null},{\"name\":\"occupation\",\"type\":\"string\",\"default\":\"\"},{\"name\":\"firstName\",\"type\":\"string\"},{\"name\":\"lastName\",\"type\":\"string\"},{\"name\":\"version\",\"type\":[\"null\",\"int\"],\"doc\":\"Version for optimistic locking\",\"default\":null}]}],\"doc\":\"Email of the comment author\"},{\"name\":\"content\",\"type\":\"string\",\"doc\":\"Comment content\"}]}");
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Comment\",\"namespace\":\"com.example.mediaservice.entity\",\"fields\":[{\"name\":\"id\",\"type\":\"string\",\"doc\":\"Comment ID as primary key\"},{\"name\":\"eventType\",\"type\":{\"type\":\"enum\",\"name\":\"CommentEventType\",\"symbols\":[\"CREATED\",\"UPDATED\",\"DELETED\"]},\"default\":\"CREATED\"},{\"name\":\"author\",\"type\":[\"null\",{\"type\":\"record\",\"name\":\"User\",\"fields\":[{\"name\":\"email\",\"type\":\"string\",\"doc\":\"Email as primary key\"},{\"name\":\"dateOfBirth\",\"type\":[\"null\",\"string\"],\"default\":null},{\"name\":\"gender\",\"type\":\"string\"},{\"name\":\"avatarUrl\",\"type\":[\"null\",\"string\"],\"default\":null},{\"name\":\"occupation\",\"type\":\"string\",\"default\":\"\"},{\"name\":\"firstName\",\"type\":\"string\"},{\"name\":\"lastName\",\"type\":\"string\"},{\"name\":\"version\",\"type\":[\"null\",\"int\"],\"doc\":\"Version for optimistic locking\",\"default\":null}]}],\"doc\":\"Email of the comment author\"},{\"name\":\"postId\",\"type\":[\"null\",\"string\"],\"doc\":\"Nếu null thì đây là comment trả lời cho comment khác, nếu có giá trị thì đây là comment cho bài post\",\"default\":null},{\"name\":\"parentId\",\"type\":[\"null\",\"string\"],\"doc\":\"ID của comment cha nếu đây là reply cho comment khác\",\"default\":null},{\"name\":\"content\",\"type\":\"string\",\"doc\":\"Comment content\"},{\"name\":\"createdAt\",\"type\":\"long\",\"doc\":\"Timestamp of post creation\",\"default\":0}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static final SpecificData MODEL$ = new SpecificData();
@@ -74,12 +74,17 @@ public class Comment extends org.apache.avro.specific.SpecificRecordBase impleme
 
   /** Comment ID as primary key */
   private java.lang.CharSequence id;
-  /** Post ID that this comment belongs to */
-  private java.lang.CharSequence postId;
+  private com.example.mediaservice.entity.CommentEventType eventType;
   /** Email of the comment author */
   private com.example.mediaservice.entity.User author;
+  /** Nếu null thì đây là comment trả lời cho comment khác, nếu có giá trị thì đây là comment cho bài post */
+  private java.lang.CharSequence postId;
+  /** ID của comment cha nếu đây là reply cho comment khác */
+  private java.lang.CharSequence parentId;
   /** Comment content */
   private java.lang.CharSequence content;
+  /** Timestamp of post creation */
+  private long createdAt;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -91,15 +96,21 @@ public class Comment extends org.apache.avro.specific.SpecificRecordBase impleme
   /**
    * All-args constructor.
    * @param id Comment ID as primary key
-   * @param postId Post ID that this comment belongs to
+   * @param eventType The new value for eventType
    * @param author Email of the comment author
+   * @param postId Nếu null thì đây là comment trả lời cho comment khác, nếu có giá trị thì đây là comment cho bài post
+   * @param parentId ID của comment cha nếu đây là reply cho comment khác
    * @param content Comment content
+   * @param createdAt Timestamp of post creation
    */
-  public Comment(java.lang.CharSequence id, java.lang.CharSequence postId, com.example.mediaservice.entity.User author, java.lang.CharSequence content) {
+  public Comment(java.lang.CharSequence id, com.example.mediaservice.entity.CommentEventType eventType, com.example.mediaservice.entity.User author, java.lang.CharSequence postId, java.lang.CharSequence parentId, java.lang.CharSequence content, java.lang.Long createdAt) {
     this.id = id;
-    this.postId = postId;
+    this.eventType = eventType;
     this.author = author;
+    this.postId = postId;
+    this.parentId = parentId;
     this.content = content;
+    this.createdAt = createdAt;
   }
 
   @Override
@@ -113,9 +124,12 @@ public class Comment extends org.apache.avro.specific.SpecificRecordBase impleme
   public java.lang.Object get(int field$) {
     switch (field$) {
     case 0: return id;
-    case 1: return postId;
+    case 1: return eventType;
     case 2: return author;
-    case 3: return content;
+    case 3: return postId;
+    case 4: return parentId;
+    case 5: return content;
+    case 6: return createdAt;
     default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
@@ -126,9 +140,12 @@ public class Comment extends org.apache.avro.specific.SpecificRecordBase impleme
   public void put(int field$, java.lang.Object value$) {
     switch (field$) {
     case 0: id = (java.lang.CharSequence)value$; break;
-    case 1: postId = (java.lang.CharSequence)value$; break;
+    case 1: eventType = (com.example.mediaservice.entity.CommentEventType)value$; break;
     case 2: author = (com.example.mediaservice.entity.User)value$; break;
-    case 3: content = (java.lang.CharSequence)value$; break;
+    case 3: postId = (java.lang.CharSequence)value$; break;
+    case 4: parentId = (java.lang.CharSequence)value$; break;
+    case 5: content = (java.lang.CharSequence)value$; break;
+    case 6: createdAt = (java.lang.Long)value$; break;
     default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
@@ -152,21 +169,20 @@ public class Comment extends org.apache.avro.specific.SpecificRecordBase impleme
   }
 
   /**
-   * Gets the value of the 'postId' field.
-   * @return Post ID that this comment belongs to
+   * Gets the value of the 'eventType' field.
+   * @return The value of the 'eventType' field.
    */
-  public java.lang.CharSequence getPostId() {
-    return postId;
+  public com.example.mediaservice.entity.CommentEventType getEventType() {
+    return eventType;
   }
 
 
   /**
-   * Sets the value of the 'postId' field.
-   * Post ID that this comment belongs to
+   * Sets the value of the 'eventType' field.
    * @param value the value to set.
    */
-  public void setPostId(java.lang.CharSequence value) {
-    this.postId = value;
+  public void setEventType(com.example.mediaservice.entity.CommentEventType value) {
+    this.eventType = value;
   }
 
   /**
@@ -188,6 +204,42 @@ public class Comment extends org.apache.avro.specific.SpecificRecordBase impleme
   }
 
   /**
+   * Gets the value of the 'postId' field.
+   * @return Nếu null thì đây là comment trả lời cho comment khác, nếu có giá trị thì đây là comment cho bài post
+   */
+  public java.lang.CharSequence getPostId() {
+    return postId;
+  }
+
+
+  /**
+   * Sets the value of the 'postId' field.
+   * Nếu null thì đây là comment trả lời cho comment khác, nếu có giá trị thì đây là comment cho bài post
+   * @param value the value to set.
+   */
+  public void setPostId(java.lang.CharSequence value) {
+    this.postId = value;
+  }
+
+  /**
+   * Gets the value of the 'parentId' field.
+   * @return ID của comment cha nếu đây là reply cho comment khác
+   */
+  public java.lang.CharSequence getParentId() {
+    return parentId;
+  }
+
+
+  /**
+   * Sets the value of the 'parentId' field.
+   * ID của comment cha nếu đây là reply cho comment khác
+   * @param value the value to set.
+   */
+  public void setParentId(java.lang.CharSequence value) {
+    this.parentId = value;
+  }
+
+  /**
    * Gets the value of the 'content' field.
    * @return Comment content
    */
@@ -203,6 +255,24 @@ public class Comment extends org.apache.avro.specific.SpecificRecordBase impleme
    */
   public void setContent(java.lang.CharSequence value) {
     this.content = value;
+  }
+
+  /**
+   * Gets the value of the 'createdAt' field.
+   * @return Timestamp of post creation
+   */
+  public long getCreatedAt() {
+    return createdAt;
+  }
+
+
+  /**
+   * Sets the value of the 'createdAt' field.
+   * Timestamp of post creation
+   * @param value the value to set.
+   */
+  public void setCreatedAt(long value) {
+    this.createdAt = value;
   }
 
   /**
@@ -248,13 +318,18 @@ public class Comment extends org.apache.avro.specific.SpecificRecordBase impleme
 
     /** Comment ID as primary key */
     private java.lang.CharSequence id;
-    /** Post ID that this comment belongs to */
-    private java.lang.CharSequence postId;
+    private com.example.mediaservice.entity.CommentEventType eventType;
     /** Email of the comment author */
     private com.example.mediaservice.entity.User author;
     private com.example.mediaservice.entity.User.Builder authorBuilder;
+    /** Nếu null thì đây là comment trả lời cho comment khác, nếu có giá trị thì đây là comment cho bài post */
+    private java.lang.CharSequence postId;
+    /** ID của comment cha nếu đây là reply cho comment khác */
+    private java.lang.CharSequence parentId;
     /** Comment content */
     private java.lang.CharSequence content;
+    /** Timestamp of post creation */
+    private long createdAt;
 
     /** Creates a new Builder */
     private Builder() {
@@ -271,8 +346,8 @@ public class Comment extends org.apache.avro.specific.SpecificRecordBase impleme
         this.id = data().deepCopy(fields()[0].schema(), other.id);
         fieldSetFlags()[0] = other.fieldSetFlags()[0];
       }
-      if (isValidValue(fields()[1], other.postId)) {
-        this.postId = data().deepCopy(fields()[1].schema(), other.postId);
+      if (isValidValue(fields()[1], other.eventType)) {
+        this.eventType = data().deepCopy(fields()[1].schema(), other.eventType);
         fieldSetFlags()[1] = other.fieldSetFlags()[1];
       }
       if (isValidValue(fields()[2], other.author)) {
@@ -282,9 +357,21 @@ public class Comment extends org.apache.avro.specific.SpecificRecordBase impleme
       if (other.hasAuthorBuilder()) {
         this.authorBuilder = com.example.mediaservice.entity.User.newBuilder(other.getAuthorBuilder());
       }
-      if (isValidValue(fields()[3], other.content)) {
-        this.content = data().deepCopy(fields()[3].schema(), other.content);
+      if (isValidValue(fields()[3], other.postId)) {
+        this.postId = data().deepCopy(fields()[3].schema(), other.postId);
         fieldSetFlags()[3] = other.fieldSetFlags()[3];
+      }
+      if (isValidValue(fields()[4], other.parentId)) {
+        this.parentId = data().deepCopy(fields()[4].schema(), other.parentId);
+        fieldSetFlags()[4] = other.fieldSetFlags()[4];
+      }
+      if (isValidValue(fields()[5], other.content)) {
+        this.content = data().deepCopy(fields()[5].schema(), other.content);
+        fieldSetFlags()[5] = other.fieldSetFlags()[5];
+      }
+      if (isValidValue(fields()[6], other.createdAt)) {
+        this.createdAt = data().deepCopy(fields()[6].schema(), other.createdAt);
+        fieldSetFlags()[6] = other.fieldSetFlags()[6];
       }
     }
 
@@ -298,8 +385,8 @@ public class Comment extends org.apache.avro.specific.SpecificRecordBase impleme
         this.id = data().deepCopy(fields()[0].schema(), other.id);
         fieldSetFlags()[0] = true;
       }
-      if (isValidValue(fields()[1], other.postId)) {
-        this.postId = data().deepCopy(fields()[1].schema(), other.postId);
+      if (isValidValue(fields()[1], other.eventType)) {
+        this.eventType = data().deepCopy(fields()[1].schema(), other.eventType);
         fieldSetFlags()[1] = true;
       }
       if (isValidValue(fields()[2], other.author)) {
@@ -307,9 +394,21 @@ public class Comment extends org.apache.avro.specific.SpecificRecordBase impleme
         fieldSetFlags()[2] = true;
       }
       this.authorBuilder = null;
-      if (isValidValue(fields()[3], other.content)) {
-        this.content = data().deepCopy(fields()[3].schema(), other.content);
+      if (isValidValue(fields()[3], other.postId)) {
+        this.postId = data().deepCopy(fields()[3].schema(), other.postId);
         fieldSetFlags()[3] = true;
+      }
+      if (isValidValue(fields()[4], other.parentId)) {
+        this.parentId = data().deepCopy(fields()[4].schema(), other.parentId);
+        fieldSetFlags()[4] = true;
+      }
+      if (isValidValue(fields()[5], other.content)) {
+        this.content = data().deepCopy(fields()[5].schema(), other.content);
+        fieldSetFlags()[5] = true;
+      }
+      if (isValidValue(fields()[6], other.createdAt)) {
+        this.createdAt = data().deepCopy(fields()[6].schema(), other.createdAt);
+        fieldSetFlags()[6] = true;
       }
     }
 
@@ -358,45 +457,41 @@ public class Comment extends org.apache.avro.specific.SpecificRecordBase impleme
     }
 
     /**
-      * Gets the value of the 'postId' field.
-      * Post ID that this comment belongs to
+      * Gets the value of the 'eventType' field.
       * @return The value.
       */
-    public java.lang.CharSequence getPostId() {
-      return postId;
+    public com.example.mediaservice.entity.CommentEventType getEventType() {
+      return eventType;
     }
 
 
     /**
-      * Sets the value of the 'postId' field.
-      * Post ID that this comment belongs to
-      * @param value The value of 'postId'.
+      * Sets the value of the 'eventType' field.
+      * @param value The value of 'eventType'.
       * @return This builder.
       */
-    public com.example.mediaservice.entity.Comment.Builder setPostId(java.lang.CharSequence value) {
+    public com.example.mediaservice.entity.Comment.Builder setEventType(com.example.mediaservice.entity.CommentEventType value) {
       validate(fields()[1], value);
-      this.postId = value;
+      this.eventType = value;
       fieldSetFlags()[1] = true;
       return this;
     }
 
     /**
-      * Checks whether the 'postId' field has been set.
-      * Post ID that this comment belongs to
-      * @return True if the 'postId' field has been set, false otherwise.
+      * Checks whether the 'eventType' field has been set.
+      * @return True if the 'eventType' field has been set, false otherwise.
       */
-    public boolean hasPostId() {
+    public boolean hasEventType() {
       return fieldSetFlags()[1];
     }
 
 
     /**
-      * Clears the value of the 'postId' field.
-      * Post ID that this comment belongs to
+      * Clears the value of the 'eventType' field.
       * @return This builder.
       */
-    public com.example.mediaservice.entity.Comment.Builder clearPostId() {
-      postId = null;
+    public com.example.mediaservice.entity.Comment.Builder clearEventType() {
+      eventType = null;
       fieldSetFlags()[1] = false;
       return this;
     }
@@ -485,6 +580,94 @@ public class Comment extends org.apache.avro.specific.SpecificRecordBase impleme
     }
 
     /**
+      * Gets the value of the 'postId' field.
+      * Nếu null thì đây là comment trả lời cho comment khác, nếu có giá trị thì đây là comment cho bài post
+      * @return The value.
+      */
+    public java.lang.CharSequence getPostId() {
+      return postId;
+    }
+
+
+    /**
+      * Sets the value of the 'postId' field.
+      * Nếu null thì đây là comment trả lời cho comment khác, nếu có giá trị thì đây là comment cho bài post
+      * @param value The value of 'postId'.
+      * @return This builder.
+      */
+    public com.example.mediaservice.entity.Comment.Builder setPostId(java.lang.CharSequence value) {
+      validate(fields()[3], value);
+      this.postId = value;
+      fieldSetFlags()[3] = true;
+      return this;
+    }
+
+    /**
+      * Checks whether the 'postId' field has been set.
+      * Nếu null thì đây là comment trả lời cho comment khác, nếu có giá trị thì đây là comment cho bài post
+      * @return True if the 'postId' field has been set, false otherwise.
+      */
+    public boolean hasPostId() {
+      return fieldSetFlags()[3];
+    }
+
+
+    /**
+      * Clears the value of the 'postId' field.
+      * Nếu null thì đây là comment trả lời cho comment khác, nếu có giá trị thì đây là comment cho bài post
+      * @return This builder.
+      */
+    public com.example.mediaservice.entity.Comment.Builder clearPostId() {
+      postId = null;
+      fieldSetFlags()[3] = false;
+      return this;
+    }
+
+    /**
+      * Gets the value of the 'parentId' field.
+      * ID của comment cha nếu đây là reply cho comment khác
+      * @return The value.
+      */
+    public java.lang.CharSequence getParentId() {
+      return parentId;
+    }
+
+
+    /**
+      * Sets the value of the 'parentId' field.
+      * ID của comment cha nếu đây là reply cho comment khác
+      * @param value The value of 'parentId'.
+      * @return This builder.
+      */
+    public com.example.mediaservice.entity.Comment.Builder setParentId(java.lang.CharSequence value) {
+      validate(fields()[4], value);
+      this.parentId = value;
+      fieldSetFlags()[4] = true;
+      return this;
+    }
+
+    /**
+      * Checks whether the 'parentId' field has been set.
+      * ID của comment cha nếu đây là reply cho comment khác
+      * @return True if the 'parentId' field has been set, false otherwise.
+      */
+    public boolean hasParentId() {
+      return fieldSetFlags()[4];
+    }
+
+
+    /**
+      * Clears the value of the 'parentId' field.
+      * ID của comment cha nếu đây là reply cho comment khác
+      * @return This builder.
+      */
+    public com.example.mediaservice.entity.Comment.Builder clearParentId() {
+      parentId = null;
+      fieldSetFlags()[4] = false;
+      return this;
+    }
+
+    /**
       * Gets the value of the 'content' field.
       * Comment content
       * @return The value.
@@ -501,9 +684,9 @@ public class Comment extends org.apache.avro.specific.SpecificRecordBase impleme
       * @return This builder.
       */
     public com.example.mediaservice.entity.Comment.Builder setContent(java.lang.CharSequence value) {
-      validate(fields()[3], value);
+      validate(fields()[5], value);
       this.content = value;
-      fieldSetFlags()[3] = true;
+      fieldSetFlags()[5] = true;
       return this;
     }
 
@@ -513,7 +696,7 @@ public class Comment extends org.apache.avro.specific.SpecificRecordBase impleme
       * @return True if the 'content' field has been set, false otherwise.
       */
     public boolean hasContent() {
-      return fieldSetFlags()[3];
+      return fieldSetFlags()[5];
     }
 
 
@@ -524,7 +707,50 @@ public class Comment extends org.apache.avro.specific.SpecificRecordBase impleme
       */
     public com.example.mediaservice.entity.Comment.Builder clearContent() {
       content = null;
-      fieldSetFlags()[3] = false;
+      fieldSetFlags()[5] = false;
+      return this;
+    }
+
+    /**
+      * Gets the value of the 'createdAt' field.
+      * Timestamp of post creation
+      * @return The value.
+      */
+    public long getCreatedAt() {
+      return createdAt;
+    }
+
+
+    /**
+      * Sets the value of the 'createdAt' field.
+      * Timestamp of post creation
+      * @param value The value of 'createdAt'.
+      * @return This builder.
+      */
+    public com.example.mediaservice.entity.Comment.Builder setCreatedAt(long value) {
+      validate(fields()[6], value);
+      this.createdAt = value;
+      fieldSetFlags()[6] = true;
+      return this;
+    }
+
+    /**
+      * Checks whether the 'createdAt' field has been set.
+      * Timestamp of post creation
+      * @return True if the 'createdAt' field has been set, false otherwise.
+      */
+    public boolean hasCreatedAt() {
+      return fieldSetFlags()[6];
+    }
+
+
+    /**
+      * Clears the value of the 'createdAt' field.
+      * Timestamp of post creation
+      * @return This builder.
+      */
+    public com.example.mediaservice.entity.Comment.Builder clearCreatedAt() {
+      fieldSetFlags()[6] = false;
       return this;
     }
 
@@ -534,7 +760,7 @@ public class Comment extends org.apache.avro.specific.SpecificRecordBase impleme
       try {
         Comment record = new Comment();
         record.id = fieldSetFlags()[0] ? this.id : (java.lang.CharSequence) defaultValue(fields()[0]);
-        record.postId = fieldSetFlags()[1] ? this.postId : (java.lang.CharSequence) defaultValue(fields()[1]);
+        record.eventType = fieldSetFlags()[1] ? this.eventType : (com.example.mediaservice.entity.CommentEventType) defaultValue(fields()[1]);
         if (authorBuilder != null) {
           try {
             record.author = this.authorBuilder.build();
@@ -545,7 +771,10 @@ public class Comment extends org.apache.avro.specific.SpecificRecordBase impleme
         } else {
           record.author = fieldSetFlags()[2] ? this.author : (com.example.mediaservice.entity.User) defaultValue(fields()[2]);
         }
-        record.content = fieldSetFlags()[3] ? this.content : (java.lang.CharSequence) defaultValue(fields()[3]);
+        record.postId = fieldSetFlags()[3] ? this.postId : (java.lang.CharSequence) defaultValue(fields()[3]);
+        record.parentId = fieldSetFlags()[4] ? this.parentId : (java.lang.CharSequence) defaultValue(fields()[4]);
+        record.content = fieldSetFlags()[5] ? this.content : (java.lang.CharSequence) defaultValue(fields()[5]);
+        record.createdAt = fieldSetFlags()[6] ? this.createdAt : (java.lang.Long) defaultValue(fields()[6]);
         return record;
       } catch (org.apache.avro.AvroMissingFieldException e) {
         throw e;
@@ -580,7 +809,7 @@ public class Comment extends org.apache.avro.specific.SpecificRecordBase impleme
   {
     out.writeString(this.id);
 
-    out.writeString(this.postId);
+    out.writeEnum(this.eventType.ordinal());
 
     if (this.author == null) {
       out.writeIndex(0);
@@ -590,7 +819,25 @@ public class Comment extends org.apache.avro.specific.SpecificRecordBase impleme
       this.author.customEncode(out);
     }
 
+    if (this.postId == null) {
+      out.writeIndex(0);
+      out.writeNull();
+    } else {
+      out.writeIndex(1);
+      out.writeString(this.postId);
+    }
+
+    if (this.parentId == null) {
+      out.writeIndex(0);
+      out.writeNull();
+    } else {
+      out.writeIndex(1);
+      out.writeString(this.parentId);
+    }
+
     out.writeString(this.content);
+
+    out.writeLong(this.createdAt);
 
   }
 
@@ -601,7 +848,7 @@ public class Comment extends org.apache.avro.specific.SpecificRecordBase impleme
     if (fieldOrder == null) {
       this.id = in.readString(this.id instanceof Utf8 ? (Utf8)this.id : null);
 
-      this.postId = in.readString(this.postId instanceof Utf8 ? (Utf8)this.postId : null);
+      this.eventType = com.example.mediaservice.entity.CommentEventType.values()[in.readEnum()];
 
       if (in.readIndex() != 1) {
         in.readNull();
@@ -613,17 +860,33 @@ public class Comment extends org.apache.avro.specific.SpecificRecordBase impleme
         this.author.customDecode(in);
       }
 
+      if (in.readIndex() != 1) {
+        in.readNull();
+        this.postId = null;
+      } else {
+        this.postId = in.readString(this.postId instanceof Utf8 ? (Utf8)this.postId : null);
+      }
+
+      if (in.readIndex() != 1) {
+        in.readNull();
+        this.parentId = null;
+      } else {
+        this.parentId = in.readString(this.parentId instanceof Utf8 ? (Utf8)this.parentId : null);
+      }
+
       this.content = in.readString(this.content instanceof Utf8 ? (Utf8)this.content : null);
 
+      this.createdAt = in.readLong();
+
     } else {
-      for (int i = 0; i < 4; i++) {
+      for (int i = 0; i < 7; i++) {
         switch (fieldOrder[i].pos()) {
         case 0:
           this.id = in.readString(this.id instanceof Utf8 ? (Utf8)this.id : null);
           break;
 
         case 1:
-          this.postId = in.readString(this.postId instanceof Utf8 ? (Utf8)this.postId : null);
+          this.eventType = com.example.mediaservice.entity.CommentEventType.values()[in.readEnum()];
           break;
 
         case 2:
@@ -639,7 +902,29 @@ public class Comment extends org.apache.avro.specific.SpecificRecordBase impleme
           break;
 
         case 3:
+          if (in.readIndex() != 1) {
+            in.readNull();
+            this.postId = null;
+          } else {
+            this.postId = in.readString(this.postId instanceof Utf8 ? (Utf8)this.postId : null);
+          }
+          break;
+
+        case 4:
+          if (in.readIndex() != 1) {
+            in.readNull();
+            this.parentId = null;
+          } else {
+            this.parentId = in.readString(this.parentId instanceof Utf8 ? (Utf8)this.parentId : null);
+          }
+          break;
+
+        case 5:
           this.content = in.readString(this.content instanceof Utf8 ? (Utf8)this.content : null);
+          break;
+
+        case 6:
+          this.createdAt = in.readLong();
           break;
 
         default:
@@ -653,9 +938,12 @@ public class Comment extends org.apache.avro.specific.SpecificRecordBase impleme
   public int hashCode() {
     int result = 1;
     result = 31 * result + (id == null ? 0 : id.hashCode());
-    result = 31 * result + (postId == null ? 0 : postId.hashCode());
+    result = 31 * result + (eventType == null ? 0 : ((java.lang.Enum) eventType).ordinal());
     result = 31 * result + (author == null ? 0 : author.hashCode());
+    result = 31 * result + (postId == null ? 0 : postId.hashCode());
+    result = 31 * result + (parentId == null ? 0 : parentId.hashCode());
     result = 31 * result + (content == null ? 0 : content.hashCode());
+    result = 31 * result + Long.hashCode(createdAt);
     return result;
   }
 
@@ -671,13 +959,22 @@ public class Comment extends org.apache.avro.specific.SpecificRecordBase impleme
     if (Utf8.compareSequences(this.id, other.id) != 0) {
       return false;
     }
-    if (Utf8.compareSequences(this.postId, other.postId) != 0) {
+    if (!java.util.Objects.equals(this.eventType, other.eventType)) {
       return false;
     }
     if (!java.util.Objects.equals(this.author, other.author)) {
       return false;
     }
+    if (Utf8.compareSequences(this.postId, other.postId) != 0) {
+      return false;
+    }
+    if (Utf8.compareSequences(this.parentId, other.parentId) != 0) {
+      return false;
+    }
     if (Utf8.compareSequences(this.content, other.content) != 0) {
+      return false;
+    }
+    if (this.createdAt != other.createdAt) {
       return false;
     }
     return true;

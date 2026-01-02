@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -19,8 +20,13 @@ import java.util.stream.Collectors;
 @Slf4j
 public class CommentRedisService {
 
+    // Lưu comments cho bài post: post:{postId}:comments -> hash {commentId: commentJson}
     private static final String POST_COMMENTS_KEY_PREFIX = "post:";
     private static final String POST_COMMENTS_KEY_SUFFIX = ":comments";
+
+    // Lưu replies cho comment: comment:{commentId}:replies -> hash {replyId: replyJson}
+    private static final String COMMENT_REPLIES_KEY_PREFIX = "comment:";
+    private static final String COMMENT_REPLIES_KEY_SUFFIX = ":replies";
 
     private final RedisTemplate<String, String> redisTemplate;
     private final ObjectMapper objectMapper;
@@ -29,23 +35,44 @@ public class CommentRedisService {
         return POST_COMMENTS_KEY_PREFIX + postId + POST_COMMENTS_KEY_SUFFIX;
     }
 
+    private String getCommentRepliesKey(String commentId) {
+        return COMMENT_REPLIES_KEY_PREFIX + commentId + COMMENT_REPLIES_KEY_SUFFIX;
+    }
+
     /**
-     * Adds or updates a comment for a specific post
+     * Lưu comment vào Redis
+     * - Nếu postId != null: lưu vào post:{postId}:comments
+     * - Nếu postId == null và parentId != null: lưu vào comment:{parentId}:replies
      */
-    public void addCommentToPost(String postId, Comment comment) {
-        String key = getPostCommentsKey(postId);
-        String field = String.valueOf(comment.getId());
+    public void saveComment(Comment comment) {
         try {
             CommentDto commentDto = new CommentDto(
                     String.valueOf(comment.getId()),
-                    String.valueOf(comment.getPostId()),
+                    comment.getPostId() != null ? String.valueOf(comment.getPostId()) : null,
+                    comment.getParentId() != null ? String.valueOf(comment.getParentId()) : null,
                     comment.getAuthor(),
-                    String.valueOf(comment.getContent())
+                    String.valueOf(comment.getContent()),
+                    comment.getCreatedAt()
             );
 
             String jsonValue = objectMapper.writeValueAsString(commentDto);
-            redisTemplate.opsForHash().put(key, field, jsonValue);
-            log.info("Added comment {} to post {} in Redis", comment.getId(), postId);
+            String field = String.valueOf(comment.getId());
+
+            // Comment cho bài post
+            if (comment.getPostId() != null) {
+                String key = getPostCommentsKey(String.valueOf(comment.getPostId()));
+                redisTemplate.opsForHash().put(key, field, jsonValue);
+                log.info("Saved comment {} for post {} in Redis", comment.getId(), comment.getPostId());
+            }
+            // Reply cho comment khác
+            else if (comment.getParentId() != null) {
+                String key = getCommentRepliesKey(String.valueOf(comment.getParentId()));
+                redisTemplate.opsForHash().put(key, field, jsonValue);
+                log.info("Saved reply {} for comment {} in Redis", comment.getId(), comment.getParentId());
+            } else {
+                log.warn("Comment {} has both postId and parentId null - cannot save", comment.getId());
+                throw new IllegalArgumentException("Comment must have either postId or parentId");
+            }
         } catch (JsonProcessingException e) {
             log.error("Failed to serialize comment: {}", e.getMessage(), e);
             throw new RuntimeException("Error serializing comment", e);
@@ -53,16 +80,29 @@ public class CommentRedisService {
     }
 
     /**
-     * Removes a comment from a post
+     * Xóa comment từ Redis
+     * - Nếu postId != null: xóa từ post:{postId}:comments
+     * - Nếu parentId != null: xóa từ comment:{parentId}:replies
      */
-    public void removeCommentFromPost(String postId, String commentId) {
-        String key = getPostCommentsKey(postId);
-        redisTemplate.opsForHash().delete(key, commentId);
-        log.info("Removed comment {} from post {} in Redis", commentId, postId);
+    public void removeComment(Comment comment) {
+        String commentId = String.valueOf(comment.getId());
+        
+        // Xóa comment của bài post
+        if (comment.getPostId() != null) {
+            String key = getPostCommentsKey(String.valueOf(comment.getPostId()));
+            redisTemplate.opsForHash().delete(key, commentId);
+            log.info("Removed comment {} from post {} in Redis", commentId, comment.getPostId());
+        }
+        // Xóa reply của comment
+        else if (comment.getParentId() != null) {
+            String key = getCommentRepliesKey(String.valueOf(comment.getParentId()));
+            redisTemplate.opsForHash().delete(key, commentId);
+            log.info("Removed reply {} from comment {} in Redis", commentId, comment.getParentId());
+        }
     }
 
     /**
-     * Retrieves all comments for a specific post
+     * Lấy tất cả comments của một bài post
      */
     public List<CommentDto> getCommentsByPost(String postId) {
         String key = getPostCommentsKey(postId);
@@ -76,13 +116,40 @@ public class CommentRedisService {
     }
 
     /**
-     * Retrieves a specific comment by ID from a post
+     * Lấy tất cả replies của một comment
+     */
+    public List<CommentDto> getRepliesByComment(String commentId) {
+        String key = getCommentRepliesKey(commentId);
+        Map<Object, Object> entries = redisTemplate.opsForHash().entries(key);
+
+        return entries.values().stream()
+                .map(Object::toString)
+                .map(this::deserializeComment)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Lấy một comment cụ thể theo ID từ bài post
      */
     public CommentDto getCommentById(String postId, String commentId) {
         String key = getPostCommentsKey(postId);
         Object value = redisTemplate.opsForHash().get(key, commentId);
         if (value == null) {
             log.warn("Comment {} not found in post {}", commentId, postId);
+            return null;
+        }
+        return deserializeComment(value.toString());
+    }
+
+    /**
+     * Lấy một reply cụ thể theo ID từ comment cha
+     */
+    public CommentDto getReplyById(String parentCommentId, String replyId) {
+        String key = getCommentRepliesKey(parentCommentId);
+        Object value = redisTemplate.opsForHash().get(key, replyId);
+        if (value == null) {
+            log.warn("Reply {} not found in comment {}", replyId, parentCommentId);
             return null;
         }
         return deserializeComment(value.toString());

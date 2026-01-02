@@ -35,6 +35,12 @@
       "type": "int",
       "default": 0,
       "doc": "Number of likes"
+    },
+    {
+      "name": "createdAt",
+      "type": "long",
+      "doc": "Timestamp of post creation",
+      "default": 0
     }
   ]
 }
