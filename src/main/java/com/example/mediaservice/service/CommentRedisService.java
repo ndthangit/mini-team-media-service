@@ -1,6 +1,7 @@
 package com.example.mediaservice.service;
 
 import com.example.mediaservice.dto.CommentDto;
+import com.example.mediaservice.dto.UserDto;
 import com.example.mediaservice.entity.Comment;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -46,11 +47,21 @@ public class CommentRedisService {
      */
     public void saveComment(Comment comment) {
         try {
+            UserDto authorDto = new UserDto(
+                    String.valueOf(comment.getAuthor().getFirstName()),
+                    String.valueOf(comment.getAuthor().getLastName()),
+                    String.valueOf(comment.getAuthor().getEmail()),
+                    String.valueOf(comment.getAuthor().getOccupation()),
+                    String.valueOf(comment.getAuthor().getGender()),
+                    String.valueOf(comment.getAuthor().getDateOfBirth()),
+                    String.valueOf(comment.getAuthor().getAvatarUrl())
+            );
+
             CommentDto commentDto = new CommentDto(
                     String.valueOf(comment.getId()),
                     comment.getPostId() != null ? String.valueOf(comment.getPostId()) : null,
                     comment.getParentId() != null ? String.valueOf(comment.getParentId()) : null,
-                    comment.getAuthor(),
+                    authorDto,
                     String.valueOf(comment.getContent()),
                     comment.getCreatedAt()
             );

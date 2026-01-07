@@ -3,10 +3,12 @@ package com.example.mediaservice.controller;
 import com.example.mediaservice.dto.CommentDto;
 import com.example.mediaservice.entity.Comment;
 import com.example.mediaservice.entity.CommentEventType;
+import com.example.mediaservice.entity.User;
 import com.example.mediaservice.producer.CommentProducerService;
 import com.example.mediaservice.service.CommentRedisService;
 import com.example.mediaservice.service.TokenService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/comment-events")
 @AllArgsConstructor
+@Slf4j
 public class CommentEventController {
 
     private final CommentProducerService commentProducerService;
@@ -37,16 +40,27 @@ public class CommentEventController {
             String commentId = UUID.randomUUID().toString();
             long timestamp = System.currentTimeMillis();
 
+            User user = User.newBuilder()
+                    .setFirstName(commentDto.author().firstName())
+                    .setLastName(commentDto.author().lastName())
+                    .setEmail(commentDto.author().email())
+                    .setOccupation(commentDto.author().occupation())
+                    .setGender(commentDto.author().gender())
+                    .setDateOfBirth(commentDto.author().dateOfBirth())
+                    .setAvatarUrl(commentDto.author().avatarUrl())
+                    .build();
+
             // Build Comment entity cho bài post
             Comment comment = Comment.newBuilder()
                     .setId(commentId)
                     .setEventType(CommentEventType.CREATED)
                     .setPostId(commentDto.postId())
                     .setParentId(null)
-                    .setAuthor(commentDto.author())
+                    .setAuthor(user)
                     .setContent(commentDto.content())
                     .setCreatedAt(timestamp)
                     .build();
+            log.info("Received comment creation request:" + comment);
 
             // Send event to Kafka
             commentProducerService.sendCommentCreated(comment);
@@ -73,12 +87,23 @@ public class CommentEventController {
             String commentId = UUID.randomUUID().toString();
             long timestamp = System.currentTimeMillis();
 
+            User user = User.newBuilder()
+                    .setFirstName(commentDto.author().firstName())
+                    .setLastName(commentDto.author().lastName())
+                    .setEmail(commentDto.author().email())
+                    .setOccupation(commentDto.author().occupation())
+                    .setGender(commentDto.author().gender())
+                    .setDateOfBirth(commentDto.author().dateOfBirth())
+                    .setAvatarUrl(commentDto.author().avatarUrl())
+                    .build();
+
             // Build Comment entity cho reply
             Comment comment = Comment.newBuilder()
                     .setId(commentId)
                     .setPostId(null) // postId null cho biết đây là reply
                     .setParentId(commentDto.parentId())
-                    .setAuthor(commentDto.author())
+                    .setEventType(CommentEventType.CREATED)
+                    .setAuthor(user)
                     .setContent(commentDto.content())
                     .setCreatedAt(timestamp)
                     .build();
@@ -102,12 +127,22 @@ public class CommentEventController {
         try {
             long timestamp = System.currentTimeMillis();
 
+            User user = User.newBuilder()
+                    .setFirstName(commentDto.author().firstName())
+                    .setLastName(commentDto.author().lastName())
+                    .setEmail(commentDto.author().email())
+                    .setOccupation(commentDto.author().occupation())
+                    .setGender(commentDto.author().gender())
+                    .setDateOfBirth(commentDto.author().dateOfBirth())
+                    .setAvatarUrl(commentDto.author().avatarUrl())
+                    .build();
+
             // Build Comment entity
             Comment comment = Comment.newBuilder()
                     .setId(commentId)
                     .setPostId(commentDto.postId()) // có thể null nếu là reply
                     .setParentId(commentDto.parentId())
-                    .setAuthor(commentDto.author())
+                    .setAuthor(user)
                     .setContent(commentDto.content())
                     .setCreatedAt(timestamp)
                     .build();

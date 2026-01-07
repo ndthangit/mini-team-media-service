@@ -30,7 +30,7 @@ public class PostEventController {
     public ResponseEntity<String> createPost(@RequestBody PostDto postDto) {
 
         try {
-            String postId = UUID.randomUUID().toString();
+            String postId ="post_" + UUID.randomUUID().toString();
 
 
             User user = User.newBuilder()
